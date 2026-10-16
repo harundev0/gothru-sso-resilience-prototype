@@ -192,11 +192,17 @@
       <section class="m-view" id="v-start" data-label="Start">
         <header class="m-head"><img class="m-logo" src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="185" height="24"></header>
         <div class="m-hero-art" aria-hidden="true">
-          <span class="m-hero-sun"></span>
-          <svg class="m-hero-mtn"><use href="#ill-mountains"/></svg>
-          <span class="b360">360°</span>
+          <span class="m-orbit back"></span>
+          <span class="m-lens">
+            <span class="m-lens-sun"></span>
+            <span class="m-lens-track"><svg><use href="#ill-mountains"/></svg><svg><use href="#ill-mountains"/></svg></span>
+          </span>
+          <span class="m-orbit"><i></i></span>
+          <span class="m-tcard t1"><span class="m-tthumb"><svg><use href="#ill-mountains"/></svg></span><span><b>Raja Ampat</b><small>2.4k views</small></span></span>
+          <span class="m-tcard t2"><span class="m-tthumb sunrise"><svg><use href="#ill-mountains"/></svg></span><span><b>Bromo Sunrise</b><small>1.8k views</small></span></span>
+          <span class="m-drag"><svg class="i"><use href="#i-chev-left"/></svg>Drag to look around<svg class="i flip"><use href="#i-chev-left"/></svg></span>
         </div>
-        <h1 class="m-title">Every place, in 360°.</h1>
+        <h1 class="m-title">Every place, in <em>360°</em>.</h1>
         <p class="m-text">Publish, share and embed panoramic tours with one GoThru account.</p>
         <div class="m-foot">
           <button class="btn btn-primary btn-block btn-lg" id="m-sso-btn" type="button"><img class="sso-mark" src="assets/logos/gothru.png" alt="" width="22" height="22"> Continue with GoThru</button>
@@ -240,8 +246,43 @@
       <section class="m-view m-center" id="v-fallback" data-label="Local login (fallback)">
         <header class="m-head"><img class="m-logo" src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="185" height="24"></header>
         <div class="m-land" aria-hidden="true">
-          <span class="m-land-sun"></span>
-          <svg class="m-land-mtn"><use href="#ill-mountains"/></svg>
+          <!-- Detour: the SSO road is closed for maintenance, the signpost points to Google and Magic Link -->
+          <svg class="m-detour" viewBox="0 0 340 340" preserveAspectRatio="xMidYMax slice">
+            <defs>
+              <linearGradient id="dt-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ede9fe"/><stop offset=".55" stop-color="#f5f3ff"/><stop offset="1" stop-color="#fce7f3"/></linearGradient>
+              <linearGradient id="dt-road" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a5b4fc"/><stop offset="1" stop-color="#6366f1"/></linearGradient>
+              <pattern id="dt-stripe" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="12" height="12" fill="#fff"/><rect width="6" height="12" fill="#f97316"/></pattern>
+            </defs>
+            <rect width="340" height="340" fill="url(#dt-sky)"/>
+            <circle cx="250" cy="130" r="38" fill="#fef3c7" opacity=".7"/>
+            <circle cx="250" cy="130" r="24" fill="#fde68a"/>
+            <g class="dt-cloud c1" fill="#fff" transform="translate(10 40)"><ellipse cx="70" cy="70" rx="30" ry="11"/><circle cx="62" cy="62" r="13"/><circle cx="80" cy="60" r="10"/></g>
+            <g class="dt-cloud c2" fill="#fff" opacity=".85" transform="translate(-30 30)"><ellipse cx="290" cy="150" rx="24" ry="8"/><circle cx="284" cy="143" r="10"/><circle cx="298" cy="144" r="7"/></g>
+            <path class="dt-bird" d="M120 110 q5 -6 10 0 q5 -6 10 0 M150 126 q4 -4 8 0 q4 -4 8 0" fill="none" stroke="#7c3aed" stroke-width="1.8" stroke-linecap="round" opacity=".55"/>
+            <g transform="translate(0 100)">
+              <path d="M0 150 L60 92 L110 130 L178 60 L240 128 L290 96 L340 126 V240 H0Z" fill="#c4b5fd" opacity=".75"/>
+              <path d="M178 60 L163 76 L171 74 L178 82 L185 74 L194 77Z M60 92 L50 102 L57 100 L62 105 L70 101Z" fill="#fff"/>
+              <path d="M0 172 L80 124 L150 164 L230 118 L340 170 V240 H0Z" fill="#a78bfa" opacity=".55"/>
+              <path d="M0 192 Q90 172 180 184 T340 178 V240 H0Z" fill="#ddd6fe"/>
+              <path d="M128 240 L176 182 L196 182 L246 240Z" fill="url(#dt-road)"/>
+              <path d="M186 186 V240" stroke="#fff" stroke-width="2.5" stroke-dasharray="7 7" opacity=".9"/>
+              <g fill="#7c3aed" opacity=".6"><path d="M268 196 l9 -24 l9 24z"/><path d="M284 200 l7 -18 l7 18z"/><path d="M30 204 l8 -22 l8 22z"/></g>
+              <!-- closed barrier with the SSO cloud -->
+              <rect x="160" y="196" width="4" height="22" rx="1" fill="#475569"/><rect x="208" y="196" width="4" height="22" rx="1" fill="#475569"/>
+              <rect x="152" y="196" width="68" height="11" rx="3" fill="url(#dt-stripe)" stroke="#ea580c" stroke-width="1"/>
+              <circle class="dt-lamp" cx="162" cy="192" r="4" fill="#f59e0b"/><circle class="dt-lamp l2" cx="210" cy="192" r="4" fill="#f59e0b"/>
+              <g class="dt-sso"><circle cx="186" cy="166" r="17" fill="#fff" stroke="#e9d5ff" stroke-width="2"/>
+                <path d="M179.5 171h12a4.5 4.5 0 0 0 .6-8.96A6.5 6.5 0 0 0 179.6 163a4 4 0 0 0-.1 8z" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linejoin="round"/>
+                <circle cx="198" cy="155" r="7" fill="#f59e0b" stroke="#fff" stroke-width="2"/><path d="M198 151.5v3.6M198 157.6v.4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g>
+              <!-- detour signpost --><g transform="translate(18 0)">
+              <rect x="88" y="138" width="5" height="82" rx="2" fill="#475569"/>
+              <g class="dt-board b1"><path d="M40 140 H96 V160 H40 L31 150Z" fill="#fff" stroke="#e2e8f0"/>
+                <use href="#lg-google" x="42" y="144" width="12" height="12"/><rect x="59" y="146" width="30" height="3.5" rx="1.75" fill="#94a3b8"/><rect x="59" y="152" width="20" height="3.5" rx="1.75" fill="#cbd5e1"/></g>
+              <g class="dt-board b2"><path d="M86 168 H140 L149 178 L140 188 H86Z" fill="#4f46e5"/>
+                <use href="#i-mail" x="93" y="172" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.4"/><rect x="110" y="174" width="26" height="3.5" rx="1.75" fill="#fff" opacity=".85"/><rect x="110" y="180" width="17" height="3.5" rx="1.75" fill="#fff" opacity=".55"/></g>
+              </g><path class="dt-spark" d="M140 150 l1.6 4.4 4.4 1.6 -4.4 1.6 -1.6 4.4 -1.6 -4.4 -4.4 -1.6 4.4 -1.6z" fill="#ec4899"/>
+            </g>
+          </svg>
         </div>
         <span class="chip chip-amber m-chip"><span class="dot blink"></span>GoThru SSO is temporarily unavailable</span>
         <h1 class="m-title" tabindex="-1">Welcome to Panorra</h1>
@@ -257,6 +298,7 @@
       <section class="m-view" id="v-email" data-label="Enter email">
         <header class="m-head"><button class="m-back" data-back type="button" aria-label="Back"><svg class="i"><use href="#i-chev-left"/></svg></button><img class="m-logo" src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="185" height="24"></header>
         <div class="m-intro">
+          <span class="m-badge" aria-hidden="true"><svg class="i"><use href="#i-mail"/></svg></span>
           <h1 class="m-title" tabindex="-1">Sign in with Magic Link</h1>
           <p class="m-text">Enter your email address and we'll send you a secure sign-in link.</p>
         </div>

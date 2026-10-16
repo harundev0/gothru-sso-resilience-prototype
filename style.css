@@ -886,3 +886,22 @@ p { text-wrap: pretty; }
   .sx-dot, .sx-confetti { display: none; }
 }
 h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus { outline: none; }
+
+/* Scenes: a sunrise fan of brand light rising behind the card (replaces mountains + rings) */
+.scene { background: radial-gradient(70% 50% at 50% 100%, rgba(236, 72, 153, .08), transparent 70%), #f7f6fd; }
+.scene::before { display: none; }
+.scene::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .07; mix-blend-mode: multiply;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.horizon { inset: 0; height: auto; overflow: hidden; }
+.hz-mtn { display: none; }
+/* Two light fans from opposite corners, like spotlights aimed at the card; they fade out before reaching it */
+.horizon::before, .horizon::after { content: ""; position: absolute; width: max(1200px, 90vw); aspect-ratio: 1; translate: -50% -50%;
+  -webkit-mask: repeating-conic-gradient(rgba(0, 0, 0, .3) 0deg, rgba(0, 0, 0, .85) 6deg, rgba(0, 0, 0, .3) 12deg), radial-gradient(closest-side, transparent 0 6%, rgba(0, 0, 0, .9) 24%, rgba(0, 0, 0, .35) 50%, transparent 80%);
+  -webkit-mask-composite: source-in; mask-composite: intersect; opacity: .4; }
+.horizon::before { left: 0; top: 0; background: conic-gradient(from 90deg, #60a5fa 0deg, #8b5cf6 90deg, #8b5cf6 360deg); animation: sweepA 14s ease-in-out infinite alternate; }
+.horizon::after { left: 100%; top: 100%; background: conic-gradient(from 270deg, #fb923c 0deg, #ec4899 90deg, #ec4899 360deg); animation: sweepB 14s ease-in-out infinite alternate; }
+/* soft halo right behind the card */
+.hz-sun { display: block; left: 50%; top: 50%; right: auto; width: 720px; height: 720px; translate: -50% -50%; background: radial-gradient(closest-side, rgba(255, 255, 255, .95) 0 40%, rgba(237, 233, 254, .6) 62%, transparent); }
+@keyframes sweepA { from { rotate: -5deg; } to { rotate: 5deg; } }
+@keyframes sweepB { from { rotate: 5deg; } to { rotate: -5deg; } }
+@media (prefers-reduced-motion: reduce) { .horizon::before, .horizon::after { animation: none; } }

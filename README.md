@@ -28,4 +28,9 @@ local login (Google or Magic Link), enter email, email sent / resent, email app,
 On a desktop it shows inside a phone frame with the scenario controls beside it; on a phone it runs full screen
 (controls behind the button on the right edge). Deep links work the same way, e.g. `mobile.html#sent`, `#fallback`.
 
+Scene background (pre-flight, redirect, verify) as static files, 1920×1080:
+[`assets/backgrounds/panorra-scene-bg.svg`](assets/backgrounds/panorra-scene-bg.svg),
+[`.webp`](assets/backgrounds/panorra-scene-bg.webp) and [`.jpg`](assets/backgrounds/panorra-scene-bg.jpg).
+The live pages draw the same background in CSS so the light fans can move.
+
 No build step and no dependencies; fonts load from Google Fonts.
