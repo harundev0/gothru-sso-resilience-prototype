@@ -90,14 +90,30 @@
   }
 
   async function handleLoginClick() {
-    const btn = $('#login-button');
-    setBtnLoading(btn, 'Connecting...');
-    $('#probe-hint').textContent = 'Checking GoThru SSO availability…';
     if (state.scenario !== 'healthy' && !state.outageStart) state.outageStart = Date.now();
-    const ok = await probeKeycloakHealth(1500);
-    resetBtn(btn);
-    $('#probe-hint').textContent = '';
-    if (ok) goRedirect(); else showMaintenance();
+    closeOverlay();
+    const ok = await runPreflight();
+    if (ok) goRedirect(); else { show('scr-app'); showMaintenance(); }
+  }
+
+  // Pre-flight screen: steps 1-3 advance on timers, step 4 spins until the real probe resolves
+  const PF_STEP_MS = 650;
+  async function runPreflight() {
+    show('scr-preflight');
+    focusTitle($('#scr-preflight'));
+    const items = $$('#pf-steps li');
+    items.forEach(li => { li.className = ''; });
+    const probe = probeKeycloakHealth(1500); // real probe starts at once; steps are only visual pacing
+    for (let i = 0; i < 3; i++) {
+      items[i].className = 'active';
+      await wait(PF_STEP_MS);
+      items[i].className = 'done';
+    }
+    items[3].className = 'active';
+    const [ok] = await Promise.all([probe, wait(700)]);
+    items[3].className = 'done';
+    await wait(450);
+    return ok;
   }
 
   /* =========================================================
@@ -112,6 +128,7 @@
     $('#sso-modal-status').innerHTML = html;
   }
   function setMeta(text) { $('#status-meta').textContent = text; }
+  function setNote(tone, text) { const n = $('#mm-note'); n.hidden = !text; n.dataset.tone = tone; n.textContent = text; }
   function resetAttempts() {
     $$('.att', modal).forEach(a => { a.className = 'att'; a.querySelector('i').style.transitionDuration = '0ms'; });
   }
@@ -131,6 +148,7 @@
     setMView('main');
     resetAttempts();
     setMeta('');
+    setNote('', '');
     clearMagicMsg();
     if (fallback) {
       markAll('fail');
@@ -179,6 +197,7 @@
     markAll('ok');
     setStatus('ok', 'SSO Service recovered! Redirecting to login...');
     setMeta('');
+    setNote('ok', 'SSO Service recovered! Redirecting to login...');
     if (redirect) later(goRedirect, 800);
   }
 
@@ -188,10 +207,12 @@
     const ok = await probeKeycloakHealth(1500);
     resetBtn(btn);
     if (ok) return recovered();
-    restartAnim(statusBox, 'shake');
-    setMeta(state.checkCount >= 3
+    const msg = state.checkCount >= 3
       ? "Still unavailable. Use Google or Magic Link below, or we'll keep checking every 10s."
-      : "Still unavailable. We'll keep checking automatically.");
+      : "Still unavailable. We'll keep checking automatically.";
+    setMeta(msg);
+    setNote('warn', msg);
+    restartAnim($('#mm-note'), 'shake');
   }
 
   function dismissMaintenance() { stopPolling(); closeOverlay(); }
@@ -570,7 +591,7 @@
 
   const JUMPS = {
     gate: openGate,
-    connecting: () => { openGate(); setBtnLoading($('#login-button'), 'Connecting...'); $('#probe-hint').textContent = 'Checking GoThru SSO availability…'; },
+    preflight: () => { runPreflight().then(ok => { if (!ok) { show('scr-app'); showMaintenance(); } else goRedirect(); }); },
     redirect: goRedirect,
     'gt-login': () => show('scr-gothru-login'),
     'st-completing': () => { show('scr-status'); renderStatus(FLOWS.sso[0]); },

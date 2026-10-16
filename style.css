@@ -194,7 +194,7 @@ p { text-wrap: pretty; }
 /* NEW — Maintenance modal */
 .modal-maint { max-width: 560px; padding: 0; text-align: left; overflow: hidden; }
 .mm-body { padding: var(--s6) var(--s6) var(--s5); }
-.mm-head { display: flex; gap: 20px; align-items: flex-start; margin-bottom: var(--s5); }
+.mm-head { display: flex; gap: 20px; align-items: flex-start; }
 .mm-head-text { min-width: 0; padding-top: var(--s1); }
 .mview { display: none; }
 .modal-maint[data-mview="main"] .mview[data-v="main"],
@@ -841,6 +841,12 @@ p { text-wrap: pretty; }
   .modal-maint, .modal-import { border-radius: 28px 28px 0 0; }
   .scene::before { width: 560px; height: 560px; }
 }
+
+/* Maintenance: visible result line (polling itself stays in the background) */
+.mm-note { margin: var(--s4) 0 0; padding: var(--s3) var(--s4); border-radius: 14px; font-size: 13.5px; font-weight: 500; text-align: left; }
+.mm-note[data-tone="ok"] { background: var(--green-50); color: #166534; }
+.mm-note[data-tone="warn"] { background: var(--amber-50); color: var(--amber-ink); }
+.mm-note.shake { animation: shake .4s; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
