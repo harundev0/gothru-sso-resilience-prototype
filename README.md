@@ -4,6 +4,7 @@ Clickable HTML/CSS/JS prototype of the Panorra × GoThru login flow when Keycloa
 It follows the *Keycloak Downtime Risk Mitigation* task specs.
 
 **Live demo:** https://harundev0.github.io/gothru-sso-resilience-prototype/
+**Mobile app version:** https://harundev0.github.io/gothru-sso-resilience-prototype/mobile.html
 
 ## Flows covered
 
@@ -21,5 +22,10 @@ The original screens (Panorra "Log in to continue", GoThru SSO login, sign-in st
 Open `index.html` in a browser, or the live demo. The **Prototype** button (bottom-left, right edge on mobile)
 switches scenarios (healthy / recovers / extended outage), speed, link state and jumps to any screen.
 Deep links work too, e.g. `index.html#maint-fallback`, `#ml-sent`, `#vf-success`, `#db-magic`, `#import`.
+
+`mobile.html` is the native-app flow from the illustrations: start, pre-flight (success / failed), redirect,
+local login (Google or Magic Link), enter email, email sent / resent, email app, verify, signed in, link invalid and home.
+On a desktop it shows inside a phone frame with the scenario controls beside it; on a phone it runs full screen
+(controls behind the button on the right edge). Deep links work the same way, e.g. `mobile.html#sent`, `#pf-fail`.
 
 No build step and no dependencies; fonts load from Google Fonts.

@@ -310,7 +310,7 @@
 <!-- =========================================================
      SCREEN 2 — Redirecting to SSO (probe OK)
      ========================================================= -->
-<section class="screen screen-center scene" id="scr-preflight" data-label="Pre-flight check">
+<section class="screen screen-center scene pf-screen" id="scr-preflight" data-label="Pre-flight check">
   <div class="horizon" aria-hidden="true"><span class="hz-sun"></span><svg class="hz-mtn"><use href="#ill-mountains"/></svg></div>
   <div class="card card-status vf-card pf-card">
     <div class="vf-brand"><img src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="208" height="27"></div>
@@ -744,6 +744,7 @@
     </div>
     <label class="pp-check"><input type="checkbox" id="pp-neterr"> Network error on “Send Magic Link”</label>
     <p class="pp-hint">Rate limit: 4th request for the same email → 429. Clicking the email link twice → “already used”.</p>
+    <p class="pp-hint">Mobile app version: <a href="mobile.html" style="color:var(--blue)">mobile.html</a></p>
   </div>
 
   <div class="pp-group">

@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panorra App — SSO Resilience</title>
+<meta name="description" content="Panorra mobile app: GoThru SSO pre-flight check, Google and Magic Link fallback, link verification. Clickable prototype.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="assets/logos/panorra360.png">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="mobile.css">
+</head>
+<body class="m-page">
+
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <defs>
+  </defs>
+
+  <!-- GoThru wordmark (approximation — swap with official asset) -->
+  <!-- Official GoThru logo (gmi-logo-light.svg), cropped to its artwork -->
+  <symbol id="lg-gothru" viewBox="12 160 1986 684">
+<path d="M12.502 631.996C12.502 508.062 104.009 429.329 216.097 429.329C295.031 429.329 344.775 470.44 373.387 516.846L306.475 554.443C288.756 526.835 256.154 503.343 216.122 503.343C146.35 503.343 96.0282 557.982 96.0282 631.996C96.0282 706.01 146.375 760.623 216.122 760.623C270.46 760.623 303.062 724.783 315.059 683.673H196.094V610.236H404.257C404.257 750.032 330.494 834.637 208.668 834.637C104.009 834.637 12.502 755.328 12.502 631.996Z" fill="#010101"/>
+<path d="M1118.58 595.955C1115.39 573.793 1110.19 552.284 1103.14 531.679H1100.58V781.53C1105.15 766.12 1108.91 750.383 1111.9 734.371C1112.78 729.752 1113.58 725.134 1114.33 720.516C1118.32 695.017 1120.53 668.865 1120.53 642.211V638.747C1120.51 624.29 1119.78 610.035 1118.58 595.955Z" fill="url(#paint0_linear_gmi)"/>
+<path d="M818.607 648.085C818.607 755.002 734.202 841.716 630.095 841.716C525.989 841.716 441.584 755.028 441.584 648.085C441.584 541.167 525.989 454.479 630.095 454.479C734.202 454.479 818.607 541.142 818.607 648.085Z" fill="url(#paint1_linear_gmi)"/>
+<path opacity="0.26" d="M630.083 495.012C547.786 495.012 481.051 563.529 481.051 648.085C481.051 732.615 547.761 801.158 630.083 801.158C712.405 801.158 779.115 732.615 779.115 648.085C779.115 563.554 712.379 495.012 630.083 495.012Z" fill="white"/>
+<path d="M863.495 413.318H1035.01C972.295 341.387 881.189 296.11 779.768 296.11C682.914 296.11 595.423 337.522 533.129 403.932C528.612 409.528 518.422 419.969 506.525 435.455C542.667 413.268 584.907 400.493 630.083 400.493C763.228 400.493 871.175 511.351 871.175 648.11C871.175 718.736 842.362 782.485 796.182 827.586H975.005V531.681H863.52V413.318H863.495Z" fill="url(#paint2_linear_gmi)"/>
+<path d="M623.985 162.235C463.407 162.235 326.196 231.732 236.872 340.708C220.107 361.112 205.098 382.897 191.922 405.887C201.359 404.808 210.971 404.256 220.709 404.256C306.319 404.256 360.405 448.679 391.602 498.951C446.065 355.415 605.563 249.275 763.58 249.275C767.545 249.275 771.461 249.526 775.451 249.677C896.574 253.617 993.729 317.166 1058.43 412.839C976.888 262.904 817.641 162.235 623.985 162.235Z" fill="url(#paint3_linear_gmi)"/>
+<path d="M1420.1 827.586V654.886C1420.1 615.532 1400.07 603.184 1369.2 603.184C1340.62 603.184 1318.31 619.623 1306.31 636.088V827.586H1233.1V435.78H1306.31V580.295C1324.03 559.137 1357.78 536.825 1402.96 536.825C1463.57 536.825 1492.76 570.883 1492.76 626.099V827.586H1420.1Z" fill="#010101"/>
+<path d="M1540.72 827.584V543.876H1613.36V582.05C1633.38 557.379 1667.12 536.823 1701.43 536.823V609.658C1696.28 608.478 1689.98 607.901 1681.42 607.901C1657.4 607.901 1625.38 622.006 1613.36 640.202V827.584H1540.72Z" fill="#010101"/>
+<path d="M1922.71 827.586V791.746C1903.84 812.879 1870.68 834.639 1825.48 834.639C1764.87 834.639 1736.28 800.556 1736.28 745.34V543.878H1808.92V715.975C1808.92 755.329 1828.95 768.254 1859.82 768.254C1887.85 768.254 1910.16 752.392 1922.74 735.953V543.878H1995.37V827.586H1922.71Z" fill="#010101"/>
+<path d="M996.917 827.586V509.217H885.381V435.78H1189.64V509.217H1078.71V827.586H996.917Z" fill="#010101"/>
+<path d="M629.239 840.06C733.753 840.06 818.478 753.043 818.478 645.701C818.478 538.359 733.753 451.342 629.239 451.342C524.725 451.342 440 538.359 440 645.701C440 753.043 524.725 840.06 629.239 840.06Z" fill="url(#paint4_radial_gmi)"/>
+<defs>
+<linearGradient id="paint0_linear_gmi" x1="1270.96" y1="294.184" x2="955.241" y2="965.649" gradientUnits="userSpaceOnUse">
+<stop stop-color="#51C8EC"/>
+<stop offset="0.1031" stop-color="#54BEE5"/>
+<stop offset="0.2981" stop-color="#56A7D7"/>
+<stop offset="0.5645" stop-color="#5A83BF"/>
+<stop offset="0.8887" stop-color="#5A57A4"/>
+<stop offset="1" stop-color="#5B449B"/>
+</linearGradient>
+<linearGradient id="paint1_linear_gmi" x1="478.006" y1="414.87" x2="769.065" y2="861.162" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F37221"/>
+<stop offset="0.3832" stop-color="#B11F31"/>
+<stop offset="0.6115" stop-color="#9F1C35"/>
+<stop offset="0.875" stop-color="#388A95"/>
+</linearGradient>
+<linearGradient id="paint2_linear_gmi" x1="976.165" y1="130.847" x2="625.032" y2="877.624" gradientUnits="userSpaceOnUse">
+<stop stop-color="#51C8EC"/>
+<stop offset="0.1031" stop-color="#54BEE5"/>
+<stop offset="0.2981" stop-color="#56A7D7"/>
+<stop offset="0.5645" stop-color="#5A83BF"/>
+<stop offset="0.8887" stop-color="#5A57A4"/>
+<stop offset="1" stop-color="#5B449B"/>
+</linearGradient>
+<linearGradient id="paint3_linear_gmi" x1="531.48" y1="169" x2="633.265" y2="430.101" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F8ED39"/>
+<stop offset="1" stop-color="#EC2227"/>
+</linearGradient>
+<radialGradient id="paint4_radial_gmi" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(542.871 526.819) scale(334.408 343.475)">
+<stop stop-color="#F9AC92"/>
+<stop offset="0.3091" stop-color="#EF3D39"/>
+<stop offset="0.4198" stop-color="#E53A37"/>
+<stop offset="0.5447" stop-color="#D23331"/>
+<stop offset="0.6764" stop-color="#B62828"/>
+<stop offset="0.8121" stop-color="#921A1D"/>
+<stop offset="0.8182" stop-color="#90191C"/>
+<stop offset="0.8556" stop-color="#971A1D"/>
+<stop offset="0.9062" stop-color="#A91C20"/>
+<stop offset="0.964" stop-color="#C91D23"/>
+<stop offset="1" stop-color="#E51E25"/>
+</radialGradient>
+</defs>
+  </symbol>
+  <!-- Panorra mark -->
+  <!-- Google G -->
+  <symbol id="lg-google" viewBox="0 0 24 24">
+    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+  </symbol>
+  <!-- Mountains illustration (colour via currentColor) -->
+  <symbol id="ill-mountains" viewBox="0 0 400 160" preserveAspectRatio="xMidYMax slice">
+    <path d="M0 112 L58 62 L104 96 L168 28 L232 92 L282 56 L342 102 L400 72 V160 H0Z" fill="currentColor" opacity=".28"/>
+    <path d="M0 132 L78 84 L138 122 L210 70 L292 128 L352 96 L400 116 V160 H0Z" fill="currentColor" opacity=".5"/>
+    <path d="M40 140 l10 -26 l10 26z M58 142 l8 -20 l8 20z M318 138 l10 -28 l10 28z M336 140 l7 -18 l7 18z" fill="currentColor" opacity=".85"/>
+    <path d="M0 160 V142 Q100 124 200 140 T400 134 V160Z" fill="currentColor" opacity=".9"/>
+  </symbol>
+
+  <!-- UI icons (24px, stroke) -->
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></symbol>
+  <symbol id="i-server" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01"/><path d="M6 18h.01"/></symbol>
+  <symbol id="i-chev-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-2.12 6.36-6.36 2.12 2.12-6.36 6.36-2.12z"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.09-3.09a2 2 0 0 0-2.82 0L6 21"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M1 14h6"/><path d="M9 8h6"/><path d="M17 16h6"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+  <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="M12 20h.01"/><path d="M8.5 16.43a5 5 0 0 1 7 0"/><path d="M5 12.86a10 10 0 0 1 5.17-2.69"/><path d="M19 12.86a10 10 0 0 0-2-1.52"/><path d="M2 8.82a15 15 0 0 1 4.18-2.64"/><path d="M22 8.82a15 15 0 0 0-11.29-3.76"/><path d="m2 2 20 20"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></symbol>
+  <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24"><path d="M14.1 6.03a2 2 0 0 0 1.79 0l3.66-1.83A1 1 0 0 1 21 5.1v12.28a1 1 0 0 1-.55.9l-4.56 2.28a2 2 0 0 1-1.79 0l-4.21-2.1a2 2 0 0 0-1.79 0l-3.66 1.83A1 1 0 0 1 3 19.38V7.1a1 1 0 0 1 .55-.9l4.56-2.28a2 2 0 0 1 1.79 0z"/><path d="M15 5.76v15"/><path d="M9 3.24v15"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></symbol>
+</svg>
+
+
+<main class="m-stage">
+
+  <!-- Designer side panel (desktop) / bottom sheet (phone) -->
+  <aside class="m-side" id="m-side" aria-label="Prototype controls">
+    <div class="m-side-head">
+      <div>
+        <h1>Panorra app</h1>
+        <p>SSO downtime resilience, mobile flow. Switch the scenario, then tap through the phone.</p>
+      </div>
+      <button class="modal-x m-side-x" id="m-side-x" type="button" aria-label="Close controls"><svg class="i"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="pp-group">
+      <span class="pp-label">GoThru SSO</span>
+      <div class="seg" role="radiogroup" aria-label="GoThru SSO">
+        <label><input type="radio" name="m-sso" value="up"><span>Available</span></label>
+        <label><input type="radio" name="m-sso" value="down" checked><span>Down</span></label>
+      </div>
+    </div>
+    <div class="pp-group">
+      <span class="pp-label">Magic link</span>
+      <div class="seg" role="radiogroup" aria-label="Magic link">
+        <label><input type="radio" name="m-link" value="valid" checked><span>Valid</span></label>
+        <label><input type="radio" name="m-link" value="used"><span>Used</span></label>
+        <label><input type="radio" name="m-link" value="expired"><span>Expired</span></label>
+      </div>
+    </div>
+    <div class="pp-group">
+      <span class="pp-label">Resend countdown</span>
+      <div class="seg" role="radiogroup" aria-label="Resend countdown speed">
+        <label><input type="radio" name="m-speed" value="1"><span>Real time</span></label>
+        <label><input type="radio" name="m-speed" value="10" checked><span>10× faster</span></label>
+      </div>
+    </div>
+    <div class="pp-jumps">
+      <b>Jump to screen</b>
+      <button data-go="start">Start</button>
+      <button data-go="preflight">Pre-flight</button>
+      <button data-go="pf-ok">Pre-flight success</button>
+      <button data-go="pf-fail">Pre-flight failed</button>
+      <button data-go="redirect">Redirect</button>
+      <button data-go="fallback">Local login</button>
+      <button data-go="email">Enter email</button>
+      <button data-go="sent">Email sent</button>
+      <button data-go="resent">Link resent</button>
+      <button data-go="mail">Email app</button>
+      <button data-go="verify">Verifying</button>
+      <button data-go="success">Signed in</button>
+      <button data-go="invalid">Link invalid</button>
+      <button data-go="home">Home</button>
+    </div>
+    <p class="pp-hint">Web version: <a href="index.html">index.html</a></p>
+  </aside>
+
+  <div class="device" id="device">
+    <div class="d-screen">
+      <div class="d-status" aria-hidden="true">
+        <span>9:41</span>
+        <span class="d-island"></span>
+        <span class="d-icons">
+          <svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+          <svg viewBox="0 0 16 12"><path d="M8 11.5 5.6 9a3.4 3.4 0 0 1 4.8 0zM3.5 6.9a6.4 6.4 0 0 1 9 0l-1.4 1.4a4.4 4.4 0 0 0-6.2 0zM1.3 4.7a9.6 9.6 0 0 1 13.4 0l-1.4 1.4a7.6 7.6 0 0 0-10.6 0z"/></svg>
+          <svg viewBox="0 0 27 12"><rect x=".5" y=".5" width="23" height="11" rx="3.5" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="25" y="4" width="1.6" height="4" rx=".8" opacity=".4"/></svg>
+        </span>
+      </div>
+
+      <!-- 0 · Start -->
+      <section class="m-view" id="v-start" data-label="Start">
+        <header class="m-head"><img class="m-logo" src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="185" height="24"></header>
+        <div class="m-hero-art" aria-hidden="true">
+          <span class="m-hero-sun"></span>
+          <svg class="m-hero-mtn"><use href="#ill-mountains"/></svg>
+          <span class="b360">360°</span>
+        </div>
+        <h1 class="m-title">Every place, in 360°.</h1>
+        <p class="m-text">Publish, share and embed panoramic tours with one GoThru account.</p>
+        <div class="m-foot">
+          <button class="btn btn-primary btn-block btn-lg" id="m-sso-btn" type="button"><img class="sso-mark" src="assets/logos/gothru.png" alt="" width="22" height="22"> Continue with GoThru</button>
+          <p class="m-legal">By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
+        </div>
+      </section>
+
+      <!-- 1 · Pre-flight check -->
+      <section class="m-view m-center pf-screen" id="v-preflight" data-label="Pre-flight check">
+        <header class="m-head"><img class="m-logo" src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="185" height="24"></header>
+        <div class="m-body-mid">
+          <div class="ring-ill" aria-hidden="true"><span class="arc"></span><span class="ring-core"><svg class="i ring-cloud"><use href="#i-cloud"/></svg><span class="ring-badge"><svg class="i rb-ok"><use href="#i-check"/></svg><svg class="i rb-x"><use href="#i-x"/></svg></span></span></div>
+          <h1 class="m-title" id="mpf-title" tabindex="-1">Preparing your sign-in</h1>
+          <p class="m-text" id="mpf-desc" aria-live="polite">We're checking the best way to sign you in to Panorra. This will only take a moment.</p>
+          <ol class="steps" id="mpf-steps">
+            <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg><svg class="i ic-x"><use href="#i-x"/></svg></span>Checking connection</li>
+            <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg><svg class="i ic-x"><use href="#i-x"/></svg></span>Preparing secure sign-in</li>
+            <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg><svg class="i ic-x"><use href="#i-x"/></svg></span>Finalizing setup</li>
+            <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg><svg class="i ic-x"><use href="#i-x"/></svg></span>Almost there...</li>
+          </ol>
+        </div>
+        <p class="m-note"><svg class="i"><use href="#i-info"/></svg>This only takes a few seconds...</p>
+      </section>
+
+      <!-- 2 · Redirect to SSO -->
+      <section class="m-view m-center" id="v-redirect" data-label="Redirect to GoThru SSO">
+        <header class="m-head"><img class="m-logo" src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="185" height="24"></header>
+        <div class="m-body-mid">
+          <div class="rd-ill" aria-hidden="true">
+            <div class="rd-win"><div class="rd-bar"><i></i><i></i><i></i></div><svg class="rd-logo"><use href="#lg-gothru"/></svg></div>
+            <span class="rd-spin"><span class="spin"></span></span>
+          </div>
+          <h1 class="m-title">Continuing to your account</h1>
+          <p class="m-text">We're securely redirecting you to continue with your account.</p>
+          <div class="progress" id="m-progress"><i></i></div>
+        </div>
+        <p class="secure-note"><svg class="i"><use href="#i-shield"/></svg><span>Secure sign-in with Gothru<small>Powered by Gothru SSO</small></span></p>
+      </section>
+
+      <!-- 3 · Local login fallback -->
+      <section class="m-view m-center" id="v-fallback" data-label="Local login (fallback)">
+        <header class="m-head"><img class="m-logo" src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="185" height="24"></header>
+        <div class="m-land" aria-hidden="true">
+          <span class="m-land-sun"></span>
+          <svg class="m-land-mtn"><use href="#ill-mountains"/></svg>
+        </div>
+        <span class="chip chip-amber m-chip"><span class="dot blink"></span>GoThru SSO is temporarily unavailable</span>
+        <h1 class="m-title" tabindex="-1">Welcome to Panorra</h1>
+        <p class="m-text">Sign in to continue and start exploring amazing places.</p>
+        <div class="m-stack">
+          <button class="btn btn-google" id="m-google" type="button"><svg class="g-ic"><use href="#lg-google"/></svg> Continue with Google</button>
+          <button class="btn btn-secondary btn-block" id="m-magic" type="button"><svg class="i m-mail-ic"><use href="#i-mail"/></svg> Continue with Magic Link</button>
+        </div>
+        <p class="m-legal m-foot">By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
+      </section>
+
+      <!-- 4 · Enter email -->
+      <section class="m-view" id="v-email" data-label="Enter email">
+        <header class="m-head"><button class="m-back" data-back type="button" aria-label="Back"><svg class="i"><use href="#i-chev-left"/></svg></button><img class="m-logo" src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="185" height="24"></header>
+        <div class="m-intro">
+          <h1 class="m-title" tabindex="-1">Sign in with Magic Link</h1>
+          <p class="m-text">Enter your email address and we'll send you a secure sign-in link.</p>
+        </div>
+        <form id="m-form" novalidate>
+          <label class="m-label" for="m-email">Email address</label>
+          <div class="input-wrap"><svg class="i"><use href="#i-mail"/></svg><input class="input" type="email" id="m-email" placeholder="you@example.com" autocomplete="email" inputmode="email" required></div>
+          <div class="form-msg" id="m-email-msg" role="status"></div>
+          <button class="btn btn-primary btn-block btn-lg" id="m-send" type="submit" disabled>Send Magic Link</button>
+        </form>
+        <p class="fb-note m-foot"><svg class="i"><use href="#i-shield"/></svg> Passwordless · single-use link · expires in 15 minutes</p>
+      </section>
+
+      <!-- 5/6 · Email sent / resent -->
+      <section class="m-view m-center" id="v-sent" data-label="Email sent">
+        <header class="m-head"><button class="m-back" data-back type="button" aria-label="Back"><svg class="i"><use href="#i-chev-left"/></svg></button><img class="m-logo" src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="185" height="24"></header>
+        <div class="m-body-mid">
+          <div class="mail-ill" aria-hidden="true">
+          <!-- Magic-link envelope: lands, flap opens, letter rises, badge pops, sparkles, then floats -->
+          <svg viewBox="0 0 180 156">
+            <defs>
+              <linearGradient id="ml-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ede9fe"/><stop offset="1" stop-color="#dbeafe"/></linearGradient>
+              <linearGradient id="ml-pocket" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b82f6"/><stop offset="1" stop-color="#7c3aed"/></linearGradient>
+              <linearGradient id="ml-flap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#93c5fd"/><stop offset="1" stop-color="#818cf8"/></linearGradient>
+              <clipPath id="ml-clip"><rect x="0" y="0" width="180" height="124"/></clipPath>
+            </defs>
+            <circle class="ml-disc" cx="90" cy="76" r="62" fill="url(#ml-bg)"/>
+            <g class="ml-orbit"><circle cx="90" cy="76" r="72" fill="none" stroke="#c4b5fd" stroke-width="1.5" stroke-dasharray="2 7" stroke-linecap="round"/><circle cx="162" cy="76" r="4" fill="#8b5cf6"/></g>
+            <ellipse class="ml-shadow" cx="90" cy="140" rx="42" ry="5" fill="#1e1b4b" opacity=".12"/>
+            <g class="ml-float">
+              <g class="ml-drop">
+                <rect x="40" y="62" width="100" height="62" rx="10" fill="#c7d2fe"/>
+                <path class="ml-flap-open" d="M40 68 Q40 62 46 62 H134 Q140 62 140 68 L94 34 Q90 31 86 34 Z" fill="#a5b4fc"/>
+                <g clip-path="url(#ml-clip)">
+                  <g class="ml-letter">
+                    <rect x="52" y="40" width="76" height="70" rx="8" fill="#fff" stroke="#e0e7ff" stroke-width="1.5"/>
+                    <circle cx="90" cy="60" r="11" fill="#eef2ff"/>
+                    <path d="M87 62.5a3.5 3.5 0 0 0 5 .3l2.3-2.3a3.5 3.5 0 0 0-5-5l-1 1M93 57.5a3.5 3.5 0 0 0-5-.3l-2.3 2.3a3.5 3.5 0 0 0 5 5l1-1" fill="none" stroke="#4f46e5" stroke-width="1.8" stroke-linecap="round"/>
+                    <rect x="66" y="78" width="48" height="5" rx="2.5" fill="#e0e7ff"/>
+                    <rect x="72" y="88" width="36" height="5" rx="2.5" fill="#eef2ff"/>
+                  </g>
+                </g>
+                <path d="M40 70 L90 102 L140 70 V114 a10 10 0 0 1 -10 10 H50 a10 10 0 0 1 -10 -10 Z" fill="url(#ml-pocket)"/>
+                <path d="M42 122 L80 94 M138 122 L100 94" stroke="#fff" stroke-opacity=".22" stroke-width="2" stroke-linecap="round"/>
+                <path class="ml-flap-closed" d="M40 68 Q40 62 46 62 H134 Q140 62 140 68 L94 96 Q90 99 86 96 Z" fill="url(#ml-flap)"/>
+              </g>
+              <g class="ml-badge"><circle cx="134" cy="116" r="15" fill="#10b981" stroke="#fff" stroke-width="4"/><path d="M127.5 116.5l4.5 4.5 8.5-9" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></g>
+            </g>
+            <path class="ml-star s1" d="M30 40l2.4 6.6L39 49l-6.6 2.4L30 58l-2.4-6.6L21 49l6.6-2.4z" fill="#f59e0b"/>
+            <path class="ml-star s2" d="M150 26l1.8 5 5 1.8-5 1.8-1.8 5-1.8-5-5-1.8 5-1.8z" fill="#ec4899"/>
+            <path class="ml-star s3" d="M160 100l1.5 4 4 1.5-4 1.5-1.5 4-1.5-4-4-1.5 4-1.5z" fill="#8b5cf6"/>
+            <circle class="ml-star s4" cx="24" cy="98" r="3" fill="#60a5fa"/>
+          </svg>
+        </div>
+          <h1 class="m-title" id="ms-title" tabindex="-1">Check your email</h1>
+          <p class="m-text"><span id="ms-lead">We've sent a sign-in link to</span><br><b class="m-email" id="ms-email">you@example.com</b></p>
+          <p class="m-text" id="ms-sub">Click the link in your email to continue to Panorra. The link will expire in 15 minutes.</p>
+        </div>
+        <div class="m-stack m-foot">
+          <button class="btn btn-primary btn-block btn-lg" id="m-open-mail" type="button">Open Email App</button>
+          <div class="or"><span>or</span></div>
+          <button class="btn btn-secondary btn-block" id="m-resend" type="button" disabled>Resend Link (60s)</button>
+          <div class="banner banner-warn" id="m-resend-msg" hidden></div>
+          <button class="link-btn" id="m-diff" type="button"><svg class="i"><use href="#i-chev-left"/></svg> Use a different email</button>
+        </div>
+      </section>
+
+      <!-- Email app -->
+      <section class="m-view m-mail" id="v-mail" data-label="Email app">
+        <header class="m-head"><button class="m-back" data-back type="button" aria-label="Back to Panorra"><svg class="i"><use href="#i-chev-left"/></svg></button><span class="m-mailbox">Inbox</span></header>
+        <h1 class="m-subject">⚡ Emergency Login Link - GoThru SSO Outage Fallback</h1>
+        <div class="mail-from"><span class="avatar sm av-gt">G</span><div><b>GoThru Security</b> <small>&lt;no-reply@id.gothru.org&gt;</small><br><small>to <span id="mm-to">you@example.com</span> · just now</small></div></div>
+        <div class="mt-card m-mt">
+          <div class="mt-brand"><svg class="mt-gt"><use href="#lg-gothru"/></svg><span class="mt-x">×</span><img class="mt-pn" src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="154" height="20"></div>
+          <span class="mt-icon"><svg class="i"><use href="#i-zap"/></svg></span>
+          <h2>Your emergency sign-in link</h2>
+          <p>Tap below to sign in to your account. This link expires in 15 minutes:</p>
+          <button class="btn btn-primary btn-lg btn-block" id="m-mail-signin" type="button">Sign In to My Account</button>
+          <span class="mt-notice"><svg class="i"><use href="#i-clock"/></svg> This single-use link expires in 15 minutes.</span>
+          <p class="mt-warn"><svg class="i"><use href="#i-shield"/></svg> If you did not request this login link, you can safely ignore this email.</p>
+        </div>
+      </section>
+
+      <!-- Verify -->
+      <section class="m-view m-center" id="v-verify" data-label="Verifying link">
+        <header class="m-head"><img class="m-logo" src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="185" height="24"></header>
+        <div class="m-body-mid">
+          <div class="ring-ill" aria-hidden="true"><span class="arc"></span><span class="ring-core"><svg class="i"><use href="#i-link"/></svg></span></div>
+          <h1 class="m-title" tabindex="-1">Verifying your sign-in link</h1>
+          <p class="m-text">Please wait a moment while we validate your link.</p>
+          <ol class="steps" id="mv-steps">
+            <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg><svg class="i ic-x"><use href="#i-x"/></svg></span>Checking link validity</li>
+            <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg><svg class="i ic-x"><use href="#i-x"/></svg></span>Signing you in securely</li>
+            <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg><svg class="i ic-x"><use href="#i-x"/></svg></span>Setting up your account</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Signed in -->
+      <section class="m-view m-center" id="v-success" data-label="Signed in">
+        <header class="m-head"><img class="m-logo" src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="185" height="24"></header>
+        <div class="m-body-mid">
+          <div class="success-ill" aria-hidden="true">
+        <!-- 360° lens: panorama pans inside, orbit ring draws in, check is drawn, confetti bursts -->
+        <svg viewBox="0 0 360 184">
+          <defs>
+            <clipPath id="sx-clip"><circle cx="180" cy="88" r="60"/></clipPath>
+            <linearGradient id="sx-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c7d2fe"/><stop offset=".7" stop-color="#fbe4f1"/></linearGradient>
+            <linearGradient id="sx-ring" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#60a5fa"/><stop offset=".5" stop-color="#8b5cf6"/><stop offset="1" stop-color="#ec4899"/></linearGradient>
+            <g id="sx-range">
+              <path d="M0 112 L40 86 L70 100 L120 66 L170 98 L210 80 L260 104 L300 74 L360 112 V184 H0Z" fill="#a5b4fc"/>
+              <path d="M0 126 L50 102 L95 122 L150 94 L205 124 L250 106 L300 126 L330 112 L360 126 V184 H0Z" fill="#7c83f0"/>
+              <path d="M60 128 l7 -18 l7 18z M74 130 l5 -13 l5 13z M236 128 l7 -20 l7 20z M250 130 l5 -12 l5 12z" fill="#4f46e5"/>
+              <path d="M0 136 Q90 128 180 136 T360 136 V184 H0Z" fill="#6366f1"/>
+            </g>
+          </defs>
+          <circle class="sx-pulse" cx="180" cy="88" r="70" fill="#8b5cf6" opacity=".12"/>
+          <g class="sx-ringwrap"><path class="sx-ring" pathLength="100" d="M66 102 A114 26 -10 1 1 294 62 A114 26 -10 1 1 66 102" fill="none" stroke="url(#sx-ring)" stroke-width="3" stroke-linecap="round" opacity=".55"/></g>
+          <g class="sx-lens">
+            <circle cx="180" cy="88" r="66" fill="#fff"/>
+            <g clip-path="url(#sx-clip)">
+              <rect x="110" y="20" width="140" height="140" fill="url(#sx-sky)"/>
+              <circle cx="206" cy="62" r="11" fill="#fde68a"/>
+              <g class="sx-pan"><use href="#sx-range"/><use href="#sx-range" x="360"/></g>
+            </g>
+          </g>
+          <path class="sx-ring sx-front" pathLength="100" d="M66 102 A114 26 -10 0 0 294 62" fill="none" stroke="url(#sx-ring)" stroke-width="3" stroke-linecap="round"/>
+          <circle class="sx-dot" r="5" fill="#ec4899" stroke="#fff" stroke-width="2">
+            <animateMotion dur="7s" begin="1.2s" repeatCount="indefinite" path="M66 102 A114 26 -10 1 1 294 62 A114 26 -10 1 1 66 102"/>
+          </circle>
+          <g class="sx-badge"><circle cx="226" cy="134" r="21" fill="#10b981" stroke="#fff" stroke-width="5"/><path class="sx-tick" pathLength="1" d="M216.5 134.5l6.5 6.5 12.5-13" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g>
+          <g class="sx-confetti">
+            <rect style="--x:-112px;--y:-58px;--r:200deg" x="177" y="85" width="6" height="10" rx="1.5" fill="#f59e0b"/>
+            <rect style="--x:-128px;--y:6px;--r:-160deg" x="177" y="85" width="6" height="10" rx="1.5" fill="#8b5cf6"/>
+            <circle style="--x:-96px;--y:52px;--r:0deg" cx="180" cy="88" r="4" fill="#60a5fa"/>
+            <rect style="--x:-58px;--y:-76px;--r:120deg" x="177" y="85" width="6" height="10" rx="1.5" fill="#ec4899"/>
+            <circle style="--x:52px;--y:-80px;--r:0deg" cx="180" cy="88" r="3.5" fill="#10b981"/>
+            <rect style="--x:116px;--y:-52px;--r:-220deg" x="177" y="85" width="6" height="10" rx="1.5" fill="#60a5fa"/>
+            <rect style="--x:132px;--y:10px;--r:160deg" x="177" y="85" width="6" height="10" rx="1.5" fill="#f59e0b"/>
+            <circle style="--x:104px;--y:58px;--r:0deg" cx="180" cy="88" r="4" fill="#ec4899"/>
+          </g>
+          <path class="sx-star t1" d="M84 34l2.6 7 7 2.6-7 2.6-2.6 7-2.6-7-7-2.6 7-2.6z" fill="#f59e0b"/>
+          <path class="sx-star t2" d="M282 120l2 5.4 5.4 2-5.4 2-2 5.4-2-5.4-5.4-2 5.4-2z" fill="#8b5cf6"/>
+          <path class="sx-star t3" d="M292 30l1.6 4.4 4.4 1.6-4.4 1.6-1.6 4.4-1.6-4.4-4.4-1.6 4.4-1.6z" fill="#ec4899"/>
+        </svg>
+      </div>
+          <h1 class="m-title" tabindex="-1">Welcome to Panorra</h1>
+          <p class="m-text">You've successfully signed in.<br>Let's start exploring amazing places!</p>
+        </div>
+        <button class="btn btn-primary btn-block btn-lg m-foot" id="m-continue" type="button">Continue</button>
+      </section>
+
+      <!-- Link invalid -->
+      <section class="m-view m-center" id="v-invalid" data-label="Link invalid">
+        <header class="m-head"><img class="m-logo" src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="185" height="24"></header>
+        <div class="m-body-mid">
+          <div class="err-ill" aria-hidden="true">
+        <!-- Broken link: link glyph draws in, shakes, snaps into two halves with a crack, X badge pops, halves sway -->
+        <svg viewBox="0 0 180 156">
+          <defs>
+            <linearGradient id="er-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe4e6"/><stop offset="1" stop-color="#fdf2f8"/></linearGradient>
+            <linearGradient id="er-ink" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f46e5"/><stop offset="1" stop-color="#7c3aed"/></linearGradient>
+          </defs>
+          <circle class="er-disc" cx="90" cy="76" r="64" fill="url(#er-bg)"/>
+          <g class="er-orbit"><circle cx="90" cy="76" r="73" fill="none" stroke="#fda4af" stroke-width="1.5" stroke-dasharray="2 7" stroke-linecap="round"/></g>
+          <circle class="er-core" cx="90" cy="76" r="44" fill="#fff"/>
+          <g class="er-glyph" fill="none" stroke="url(#er-ink)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <g class="er-a"><g class="er-a-in"><g transform="translate(62 48) scale(2.33)"><path pathLength="1" d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/></g></g></g>
+            <g class="er-b"><g class="er-b-in"><g transform="translate(62 48) scale(2.33)"><path pathLength="1" d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></g></g></g>
+          </g>
+          <path class="er-crack" d="M93 67 l-5 8 h6 l-5 8" fill="none" stroke="#f43f5e" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <g class="er-sparks" stroke-linecap="round" stroke-width="3">
+            <path d="M126 22 l-3 9" stroke="#f43f5e"/>
+            <path d="M140 32 l-8 5" stroke="#f43f5e"/>
+            <path d="M144 48 h-8" stroke="#fb7185"/>
+          </g>
+          <g class="er-badge"><circle cx="122" cy="108" r="15" fill="#ef4444" stroke="#fff" stroke-width="4"/><path d="M116.5 102.5l11 11M127.5 102.5l-11 11" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/></g>
+          <path class="er-star s1" d="M30 46l2.2 6 6 2.2-6 2.2-2.2 6-2.2-6-6-2.2 6-2.2z" fill="#fb7185"/>
+          <circle class="er-star s2" cx="40" cy="112" r="3" fill="#a5b4fc"/>
+        </svg>
+      </div>
+          <h1 class="m-title" tabindex="-1">This link is no longer valid</h1>
+          <p class="m-text">The sign-in link may have expired or has already been used.</p>
+          <div class="banner banner-err"><svg class="i"><use href="#i-alert"/></svg><span id="mi-detail">This magic link has already been used.</span></div>
+        </div>
+        <div class="m-stack m-foot">
+          <button class="btn btn-primary btn-block btn-lg" id="m-new-link" type="button">Request a new link</button>
+          <div class="or"><span>or</span></div>
+          <button class="btn btn-secondary btn-block" id="m-other-email" type="button">Use a different email</button>
+        </div>
+      </section>
+
+      <!-- Google -->
+      <section class="m-view m-center" id="v-google" data-label="Google sign-in">
+        <header class="m-head"><img class="m-logo" src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="185" height="24"></header>
+        <div class="m-body-mid">
+          <div class="ring-ill" aria-hidden="true"><span class="arc"></span><span class="ring-core"><svg class="m-g"><use href="#lg-google"/></svg></span></div>
+          <h1 class="m-title" tabindex="-1">Signing in with Google</h1>
+          <p class="m-text">Confirming your Google account and linking it to your Panorra profile.</p>
+        </div>
+      </section>
+
+      <!-- Home -->
+      <section class="m-view m-home" id="v-home" data-label="Home">
+        <header class="m-head">
+          <img class="m-logo" src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="185" height="24">
+          <span class="avatar sm av-user m-avatar">ES</span>
+        </header>
+        <span class="chip chip-blue m-session" id="m-session" hidden></span>
+        <h1 class="m-title m-hello" tabindex="-1">Hi, Eko</h1>
+        <p class="m-text">Pick up where you left off.</p>
+        <label class="m-search"><svg class="i"><use href="#i-search"/></svg><input type="search" placeholder="Search tours, places..." aria-label="Search tours"></label>
+        <div class="m-sec"><h2>Your tours</h2><span class="sync-pill" data-tone="live">● Live sync</span></div>
+        <div class="m-tours" id="m-tours"></div>
+        <nav class="m-tabs" aria-label="App">
+          <a href="#" class="on"><svg class="i"><use href="#i-home"/></svg>Home</a>
+          <a href="#"><svg class="i"><use href="#i-compass"/></svg>Explore</a>
+          <a href="#"><svg class="i"><use href="#i-plus"/></svg>Create</a>
+          <a href="#"><svg class="i"><use href="#i-image"/></svg>Library</a>
+        </nav>
+      </section>
+
+      <div class="m-toast" id="m-toast" role="status"><span class="toast-ic"><svg class="i"><use href="#i-check"/></svg></span><span id="m-toast-msg"></span></div>
+      <span class="d-home" aria-hidden="true"></span>
+    </div>
+  </div>
+</main>
+
+<button class="m-fab" id="m-fab" type="button" aria-controls="m-side" aria-expanded="false"><svg class="i"><use href="#i-layers"/></svg><span>Prototype</span></button>
+
+<script src="mobile.js"></script>
+</body>
+</html>
