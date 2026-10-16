@@ -434,11 +434,15 @@ p { text-wrap: pretty; }
 .vf-card[data-state="verifying"] [data-v="verifying"],
 .vf-card[data-state="success"] [data-v="success"],
 .vf-card[data-state="error"] [data-v="error"] { display: block; animation: fadeUp .4s var(--ease-out); }
-.ring-ill { position: relative; width: 132px; height: 132px; margin: 0 auto var(--s5); display: grid; place-items: center; }
-.ring-ill::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #eef3fe; }
-.ring-ill .arc { position: absolute; inset: 6px; border-radius: 50%; border: 3px solid #e8edf8; border-top-color: var(--blue); animation: rot 1.1s linear infinite; }
-.ring-core { position: relative; width: 76px; height: 76px; border-radius: 50%; background: #fff; display: grid; place-items: center; color: var(--blue); }
-.ring-core .i { width: 30px; height: 30px; }
+.ring-ill { position: relative; width: 148px; height: 148px; margin: 0 auto var(--s5); display: grid; place-items: center; }
+/* Layered soft disc: outer halo, thin track + arc, raised white core */
+.ring-ill::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #f6f8ff; box-shadow: 0 18px 40px -22px rgba(37, 99, 235, .35), inset 0 0 0 1px rgba(219, 228, 250, .9); }
+.ring-ill .arc { position: absolute; inset: 8px; border-radius: 50%; border: 3px solid #e3e9f6; border-top-color: var(--blue); border-right-color: var(--blue); animation: rot 1.1s linear infinite; }
+.ring-core { position: relative; width: 92px; height: 92px; border-radius: 50%; background: #fff; display: grid; place-items: center; color: var(--blue); box-shadow: 0 0 0 10px rgba(255, 255, 255, .7), 0 12px 28px -12px rgba(30, 64, 175, .3); }
+.ring-core .i { width: 32px; height: 32px; }
+.ring-core .ring-cloud { width: 50px; height: 50px; stroke-width: 1.6; translate: -2px -2px; }
+.ring-badge { position: absolute; right: 14px; bottom: 18px; width: 26px; height: 26px; border-radius: 50%; background: var(--blue); color: #fff; display: grid; place-items: center; box-shadow: 0 0 0 2.5px #fff; }
+.ring-core .ring-badge .i { width: 13px; height: 13px; stroke-width: 3.2; }
 .steps { list-style: none; padding: 0; margin: var(--s6) auto 0; display: grid; gap: var(--s4); width: max-content; max-width: 100%; text-align: left; }
 .steps li { position: relative; display: flex; gap: 12px; align-items: center; font-size: 14.5px; color: var(--muted); transition: color .25s; }
 .steps li:not(:last-child)::after { content: ""; position: absolute; left: 10px; top: 25px; height: 14px; border-left: 2px dotted #d1d5db; }
