@@ -314,14 +314,14 @@
   <div class="horizon" aria-hidden="true"><span class="hz-sun"></span><svg class="hz-mtn"><use href="#ill-mountains"/></svg></div>
   <div class="card card-status vf-card pf-card">
     <div class="vf-brand"><img src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="208" height="27"></div>
-    <div class="ring-ill" aria-hidden="true"><span class="arc"></span><span class="ring-core"><svg class="i ring-cloud"><use href="#i-cloud"/></svg><span class="ring-badge"><svg class="i"><use href="#i-check"/></svg></span></span></div>
-    <h1 tabindex="-1">Preparing your sign-in</h1>
-    <p>We're checking the best way to sign you in to Panorra. This will only take a moment.</p>
+    <div class="ring-ill" aria-hidden="true"><span class="arc"></span><span class="ring-core"><svg class="i ring-cloud"><use href="#i-cloud"/></svg><span class="ring-badge"><svg class="i rb-ok"><use href="#i-check"/></svg><svg class="i rb-x"><use href="#i-x"/></svg></span></span></div>
+    <h1 tabindex="-1" id="pf-title">Preparing your sign-in</h1>
+    <p id="pf-desc" aria-live="polite">We're checking the best way to sign you in to Panorra. This will only take a moment.</p>
     <ol class="steps" id="pf-steps">
-      <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg></span>Checking connection</li>
-      <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg></span>Preparing secure sign-in</li>
-      <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg></span>Finalizing setup</li>
-      <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg></span>Almost there...</li>
+      <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg><svg class="i ic-x"><use href="#i-x"/></svg></span>Checking connection</li>
+      <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg><svg class="i ic-x"><use href="#i-x"/></svg></span>Preparing secure sign-in</li>
+      <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg><svg class="i ic-x"><use href="#i-x"/></svg></span>Finalizing setup</li>
+      <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg><svg class="i ic-x"><use href="#i-x"/></svg></span>Almost there...</li>
     </ol>
   </div>
 </section>
@@ -767,6 +767,8 @@
       <b>Login</b>
       <button data-jump="gate">Log in to continue</button>
       <button data-jump="preflight">Pre-flight check</button>
+      <button data-jump="pf-ok">Pre-flight success</button>
+      <button data-jump="pf-fail">Pre-flight failed</button>
       <button data-jump="redirect">Redirect to SSO</button>
       <button data-jump="gt-login">GoThru SSO login</button>
       <button data-jump="st-completing">Completing sign in</button>
