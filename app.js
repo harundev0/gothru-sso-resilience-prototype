@@ -93,7 +93,8 @@
     if (state.scenario !== 'healthy' && !state.outageStart) state.outageStart = Date.now();
     closeOverlay();
     const ok = await runPreflight();
-    if (ok) goRedirect(); else { show('scr-app'); showMaintenance(); }
+    // Pre-flight failed: offer Google and Magic Link at once; polling keeps running in the background
+    if (ok) goRedirect(); else { show('scr-app'); showMaintenance({ fallback: true }); }
   }
 
   // Pre-flight screen: steps 1-3 advance on timers, step 4 spins until the real probe resolves
@@ -591,7 +592,7 @@
 
   const JUMPS = {
     gate: openGate,
-    preflight: () => { runPreflight().then(ok => { if (!ok) { show('scr-app'); showMaintenance(); } else goRedirect(); }); },
+    preflight: () => { runPreflight().then(ok => { if (!ok) { show('scr-app'); showMaintenance({ fallback: true }); } else goRedirect(); }); },
     redirect: goRedirect,
     'gt-login': () => show('scr-gothru-login'),
     'st-completing': () => { show('scr-status'); renderStatus(FLOWS.sso[0]); },

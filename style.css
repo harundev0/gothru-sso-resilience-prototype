@@ -258,7 +258,6 @@ p { text-wrap: pretty; }
 .mail-ill { width: 180px; height: 156px; margin: 0 auto var(--s4); }
 .mail-ill svg { width: 100%; height: 100%; overflow: visible; }
 .mail-ill svg * { transform-box: fill-box; }
-.spark { position: absolute; width: 3px; height: 10px; border-radius: 3px; animation: fadeIn .4s .45s both; }
 /* Envelope story: drop 0-.45s, flap .4-.75s, letter .7-1.1s, badge 1.05s, stars 1.2s, then idle loops */
 .ml-disc { transform-origin: center; animation: mlDisc .6s var(--ease-out) both; }
 .ml-orbit { transform-origin: center; animation: fadeIn .6s .3s both, rot 14s linear infinite; }
@@ -483,13 +482,35 @@ p { text-wrap: pretty; }
 .vf-view[data-v="success"] .btn { margin-top: var(--s6); }
 .vf-view[data-v="error"] .banner { margin: var(--s5) 0; }
 
-.err-ill { position: relative; width: 112px; height: 112px; margin: 0 auto var(--s5); border-radius: 50%; background: #fde2e4; display: grid; place-items: center; }
-.err-core { color: #334155; }
-.err-core .i { width: 40px; height: 40px; }
-.err-x { position: absolute; right: 8px; bottom: 12px; width: 32px; height: 32px; border-radius: 50%; background: #ef4444; color: #fff; display: grid; place-items: center; border: 3px solid #fff; animation: pop .45s .1s var(--ease-spring) both; }
-.err-x .i { width: 14px; height: 14px; stroke-width: 3; }
-.spark.e1 { background: #ef4444; top: 4px; right: 20px; transform: rotate(20deg); }
-.spark.e2 { background: #ef4444; top: 16px; right: 6px; transform: rotate(60deg); }
+.err-ill { width: 180px; height: 156px; margin: 0 auto var(--s4); }
+.err-ill svg { width: 100%; height: 100%; overflow: visible; }
+.err-ill svg * { transform-box: fill-box; transform-origin: center; }
+.err-ill svg [transform] { transform-box: view-box; transform-origin: 0 0; } /* keep rotate() attribute pivots in user space */
+/* Story: disc .0s, chain pops .1s, shake .55s, snap .85s (sparks + debris), badge 1.1s, then sway loop */
+.er-disc { animation: mlDisc .6s var(--ease-out) both; }
+.er-orbit { animation: fadeIn .6s .3s both, rot 18s linear infinite; }
+.er-chain { animation: mlPop .45s .1s var(--ease-spring) both, erShake .3s .55s ease-in-out both; }
+.er-l { animation: erSnapL .55s .85s var(--ease-spring) both; }
+.er-r { animation: erSnapR .55s .85s var(--ease-spring) both; }
+.er-l-in { animation: erSwayL 3s 1.6s ease-in-out infinite; }
+.er-r-in { animation: erSwayR 3s 1.6s ease-in-out infinite; }
+.er-sparks path { opacity: 0; animation: erBurst .6s .85s var(--ease-out) both; }
+.er-sparks path:nth-child(2), .er-sparks path:nth-child(3) { animation-delay: .9s; }
+.er-debris > * { opacity: 0; animation: erFall 1.1s .9s var(--ease-out) both; }
+.er-debris > :nth-child(2) { --dx: 10px; animation-delay: .95s; }
+.er-debris > :nth-child(3) { --dx: -4px; animation-delay: 1s; }
+.er-badge { animation: mlPop .5s 1.1s var(--ease-spring) both; }
+.er-shadow { animation: mlShadow 3s 1.6s ease-in-out infinite; }
+.er-star { animation: mlPop .45s var(--ease-spring) both, mlTwinkle 2.4s ease-in-out infinite; }
+.er-star.s1 { animation-delay: 1.25s, 1.8s; }
+.er-star.s2 { animation-delay: 1.35s, 2.2s; }
+@keyframes erShake { 25% { transform: translateX(-3px) rotate(-2deg); } 50% { transform: translateX(3px) rotate(2deg); } 75% { transform: translateX(-2px); } }
+@keyframes erSnapL { to { transform: translate(-9px, 5px) rotate(-10deg); } }
+@keyframes erSnapR { to { transform: translate(9px, -5px) rotate(10deg); } }
+@keyframes erSwayL { 50% { transform: translate(-2px, 2px) rotate(-3deg); } }
+@keyframes erSwayR { 50% { transform: translate(2px, -2px) rotate(3deg); } }
+@keyframes erBurst { 0% { transform: scale(.2); opacity: 0; } 30% { opacity: 1; } 100% { transform: scale(1.25); opacity: 0; } }
+@keyframes erFall { 0% { transform: translate(0, 0); opacity: 0; } 10% { opacity: 1; } 100% { transform: translate(var(--dx, -10px), 44px) rotate(160deg); opacity: 0; } }
 
 /* =========================================================
    SCREEN 7 — Dashboard
@@ -855,7 +876,8 @@ p { text-wrap: pretty; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   .spin, .ring-spin, .ring-ill .arc, .steps li.active .s-ic { animation: rot 1.2s linear infinite !important; }
-  .mail-ill svg *, .success-ill svg * { animation-delay: 0s !important; }
+  .mail-ill svg *, .success-ill svg *, .err-ill svg * { animation-delay: 0s !important; }
+  .er-sparks, .er-debris { display: none; }
   .sx-dot, .sx-confetti { display: none; }
 }
 h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus { outline: none; }

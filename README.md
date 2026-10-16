@@ -8,7 +8,7 @@ It follows the *Keycloak Downtime Risk Mitigation* task specs.
 ## Flows covered
 
 - Pre-flight screen on "Continue with Gothru": 4-step loader while the 1.5 s health probe runs, then redirect to GoThru SSO when healthy.
-- In-app maintenance modal: silent background polling every 10 s, auto-recovery redirect, emergency fallback after 30 s.
+- In-app maintenance modal: Google and Magic Link fallback shown as soon as pre-flight fails; silent background polling every 10 s with auto-recovery redirect.
 - Fallback sign-in: Google, or passwordless Magic Link (sent, resent with 60 s cooldown, 429 rate limit).
 - Emergency email template, link verification (success, already used, expired).
 - Dashboard: emergency session toast, session banner with retry backoff, app-to-app import states
