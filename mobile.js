@@ -52,18 +52,16 @@
   const PF_COPY = {
     run: ['Preparing your sign-in', "We're checking the best way to sign you in to Panorra. This will only take a moment."],
     ok: ["You're all set", 'GoThru SSO is available. Taking you to secure sign-in...'],
-    fail: ['Sign-in service is unavailable', 'GoThru SSO is temporarily down. You can still sign in with Google or a magic link.'],
   };
   function setPreflight(result) {
     const v = $('#v-preflight');
     v.dataset.result = result;
     [$('#mpf-title').textContent, $('#mpf-desc').textContent] = PF_COPY[result];
-    $$('#mpf-steps li')[3].lastChild.textContent = result === 'fail' ? "Couldn't reach GoThru SSO" : 'Almost there...';
   }
-  function showPreflightResult(ok) {
+  function showPreflightOk() {
     go('preflight');
-    $$('#mpf-steps li').forEach((li, i) => { li.className = i < 3 || ok ? 'done' : 'fail'; });
-    setPreflight(ok ? 'ok' : 'fail');
+    $$('#mpf-steps li').forEach(li => { li.className = 'done'; });
+    setPreflight('ok');
   }
   async function runPreflight() {
     setPreflight('run');
@@ -78,10 +76,11 @@
     }
     items[3].className = 'active';
     const [ok] = await Promise.all([result, wait(700)]);
-    items[3].className = ok ? 'done' : 'fail';
-    setPreflight(ok ? 'ok' : 'fail');
-    await wait(ok ? 1000 : 1400);
-    if (ok) runRedirect(); else go('fallback');
+    if (!ok) return go('fallback'); // failure is not shown: straight to Google / Magic Link
+    items[3].className = 'done';
+    setPreflight('ok');
+    await wait(1000);
+    runRedirect();
   }
 
   async function runRedirect() {
@@ -229,8 +228,7 @@
   const JUMPS = {
     start: () => go('start'),
     preflight: () => runPreflight(),
-    'pf-ok': () => showPreflightResult(true),
-    'pf-fail': () => showPreflightResult(false),
+    'pf-ok': showPreflightOk,
     redirect: () => runRedirect(),
     fallback: () => go('fallback'),
     email: () => openEmail(),
@@ -284,7 +282,7 @@
   $('#m-side-x').addEventListener('click', () => togglePanel(false));
   $$('.m-tabs a').forEach(a => a.addEventListener('click', e => e.preventDefault()));
 
-  // Deep link: mobile.html#sent, #pf-fail, ...
+  // Deep link: mobile.html#sent, #fallback, ...
   const hash = location.hash.slice(1);
   if (JUMPS[hash]) jump(hash); else go('start', { push: false });
 })();

@@ -102,19 +102,17 @@
   const PF_COPY = {
     run: ['Preparing your sign-in', "We're checking the best way to sign you in to Panorra. This will only take a moment."],
     ok: ["You're all set", 'GoThru SSO is available. Taking you to secure sign-in...'],
-    fail: ['Sign-in service is unavailable', 'GoThru SSO is temporarily down. You can still sign in with Google or a magic link.'],
   };
   function setPreflight(result) {
     const scr = $('#scr-preflight');
     scr.dataset.result = result;
     [$('#pf-title').textContent, $('#pf-desc').textContent] = PF_COPY[result];
-    $$('#pf-steps li')[3].lastChild.textContent = result === 'fail' ? "Couldn't reach GoThru SSO" : 'Almost there...';
   }
   // Final state shown without animation timing (prototype jumps)
-  function showPreflightResult(ok) {
+  function showPreflightOk() {
     show('scr-preflight');
-    $$('#pf-steps li').forEach((li, i) => { li.className = i < 3 || ok ? 'done' : 'fail'; });
-    setPreflight(ok ? 'ok' : 'fail');
+    $$('#pf-steps li').forEach(li => { li.className = 'done'; });
+    setPreflight('ok');
   }
   async function runPreflight() {
     show('scr-preflight');
@@ -130,10 +128,11 @@
     }
     items[3].className = 'active';
     const [ok] = await Promise.all([probe, wait(700)]);
-    items[3].className = ok ? 'done' : 'fail';
-    setPreflight(ok ? 'ok' : 'fail');
-    await wait(ok ? 1000 : 1400); // hold the result long enough to read
-    return ok;
+    if (!ok) return false; // failure is not shown: the caller opens Google / Magic Link straight away
+    items[3].className = 'done';
+    setPreflight('ok');
+    await wait(1000); // hold the success state long enough to read
+    return true;
   }
 
   /* =========================================================
@@ -612,8 +611,7 @@
   const JUMPS = {
     gate: openGate,
     preflight: () => { runPreflight().then(ok => { if (!ok) { show('scr-app'); showMaintenance({ fallback: true }); } else goRedirect(); }); },
-    'pf-ok': () => showPreflightResult(true),
-    'pf-fail': () => showPreflightResult(false),
+    'pf-ok': showPreflightOk,
     redirect: goRedirect,
     'gt-login': () => show('scr-gothru-login'),
     'st-completing': () => { show('scr-status'); renderStatus(FLOWS.sso[0]); },
