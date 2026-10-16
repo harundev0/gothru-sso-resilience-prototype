@@ -540,37 +540,28 @@
 
     <div class="vf-view" data-v="error">
       <div class="err-ill" aria-hidden="true">
-        <!-- Broken link: chain appears joined, shakes, snaps apart with sparks and debris, X badge pops, halves sway -->
+        <!-- Broken link: link glyph draws in, shakes, snaps into two halves with a crack, X badge pops, halves sway -->
         <svg viewBox="0 0 180 156">
           <defs>
-            <linearGradient id="er-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe4e6"/><stop offset="1" stop-color="#ede9fe"/></linearGradient>
-            <linearGradient id="er-chain" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#a855f7"/></linearGradient>
+            <linearGradient id="er-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe4e6"/><stop offset="1" stop-color="#fdf2f8"/></linearGradient>
+            <linearGradient id="er-ink" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f46e5"/><stop offset="1" stop-color="#7c3aed"/></linearGradient>
           </defs>
-          <circle class="er-disc" cx="90" cy="76" r="62" fill="url(#er-bg)"/>
-          <g class="er-orbit"><circle cx="90" cy="76" r="72" fill="none" stroke="#fda4af" stroke-width="1.5" stroke-dasharray="2 7" stroke-linecap="round"/></g>
-          <ellipse class="er-shadow" cx="90" cy="140" rx="40" ry="5" fill="#1e1b4b" opacity=".1"/>
-          <g class="er-chain">
-            <g class="er-l"><g class="er-l-in">
-              <rect x="42" y="62" width="58" height="28" rx="14" transform="rotate(-45 71 76)" fill="none" stroke="url(#er-chain)" stroke-width="10"/>
-            </g></g>
-            <g class="er-r"><g class="er-r-in">
-              <rect x="80" y="62" width="58" height="28" rx="14" transform="rotate(-45 109 76)" fill="none" stroke="url(#er-chain)" stroke-width="10"/>
-            </g></g>
+          <circle class="er-disc" cx="90" cy="76" r="64" fill="url(#er-bg)"/>
+          <g class="er-orbit"><circle cx="90" cy="76" r="73" fill="none" stroke="#fda4af" stroke-width="1.5" stroke-dasharray="2 7" stroke-linecap="round"/></g>
+          <circle class="er-core" cx="90" cy="76" r="44" fill="#fff"/>
+          <g class="er-glyph" fill="none" stroke="url(#er-ink)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <g class="er-a"><g class="er-a-in"><g transform="translate(62 48) scale(2.33)"><path pathLength="1" d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/></g></g></g>
+            <g class="er-b"><g class="er-b-in"><g transform="translate(62 48) scale(2.33)"><path pathLength="1" d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></g></g></g>
           </g>
+          <path class="er-crack" d="M93 67 l-5 8 h6 l-5 8" fill="none" stroke="#f43f5e" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
           <g class="er-sparks" stroke-linecap="round" stroke-width="3">
-            <path d="M90 58 v-12" stroke="#f43f5e"/>
-            <path d="M104 64 l9 -7" stroke="#f59e0b"/>
-            <path d="M76 88 l-9 7" stroke="#f59e0b"/>
-            <path d="M90 94 v12" stroke="#f43f5e"/>
+            <path d="M126 22 l-3 9" stroke="#f43f5e"/>
+            <path d="M140 32 l-8 5" stroke="#f43f5e"/>
+            <path d="M144 48 h-8" stroke="#fb7185"/>
           </g>
-          <g class="er-debris">
-            <rect x="86" y="74" width="5" height="5" rx="1" fill="#818cf8"/>
-            <rect x="92" y="78" width="4" height="4" rx="1" fill="#c084fc"/>
-            <circle cx="89" cy="80" r="2" fill="#f43f5e"/>
-          </g>
-          <g class="er-badge"><circle cx="134" cy="116" r="15" fill="#ef4444" stroke="#fff" stroke-width="4"/><path d="M128.5 110.5l11 11M139.5 110.5l-11 11" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/></g>
-          <path class="er-star s1" d="M32 44l2.2 6 6 2.2-6 2.2-2.2 6-2.2-6-6-2.2 6-2.2z" fill="#fb7185"/>
-          <path class="er-star s2" d="M154 34l1.6 4.4 4.4 1.6-4.4 1.6-1.6 4.4-1.6-4.4-4.4-1.6 4.4-1.6z" fill="#a78bfa"/>
+          <g class="er-badge"><circle cx="122" cy="108" r="15" fill="#ef4444" stroke="#fff" stroke-width="4"/><path d="M116.5 102.5l11 11M127.5 102.5l-11 11" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/></g>
+          <path class="er-star s1" d="M30 46l2.2 6 6 2.2-6 2.2-2.2 6-2.2-6-6-2.2 6-2.2z" fill="#fb7185"/>
+          <circle class="er-star s2" cx="40" cy="112" r="3" fill="#a5b4fc"/>
         </svg>
       </div>
       <h1>This link is no longer valid</h1>
