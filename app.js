@@ -398,35 +398,38 @@
 
   const FLOWS = {
     sso: [
-      ['spin', 'Completing GoThru sign in', `Verifying your account and preparing your ${BRAND} session.`, 1800],
-      ['check', 'Sign in complete', `Your GoThru account is verified. Loading your ${BRAND} profile.`, 1500],
+      ['spin', 'Completing GoThru sign in', `Verifying your account and preparing your ${BRAND} session.`, 2800],
       ['check', 'Welcome back, Eko Syaepulloh Qa', `Everything is ready. Taking you to ${BRAND} now.`, 2300,
         ['GoThru account verified', `${BRAND} session created`, 'Profile loaded']],
     ],
     google: [
       ['spin', 'Redirecting to Google…', 'Opening Google sign-in to verify your email ownership.', 1300],
-      ['spin', 'Completing Google sign in', `Verifying your Google account and preparing your ${BRAND} session.`, 1700],
-      ['check', 'Sign in complete', `Your Google account is verified. Loading your ${BRAND} profile.`, 1500],
+      ['spin', 'Completing Google sign in', `Verifying your Google account and preparing your ${BRAND} session.`, 2800],
       ['check', 'Welcome back, Eko Syaepulloh Qa', `Everything is ready. Taking you to ${BRAND} now.`, 2300,
         ['Google account verified', `${BRAND} session created`, 'Profile loaded']],
     ],
   };
 
-  function renderStatus([kind, title, desc, , list]) {
-    $('#st-visual').innerHTML = kind === 'spin'
-      ? '<span class="ring-spin" role="progressbar" aria-label="Loading"></span>'
-      : '<span class="ok-badge" aria-hidden="true">✓</span>';
+  // Status card in the verify style: provider ring while working, 360° success art at the end, steps below
+  function renderStatus(phase) {
+    const [, title, desc, , list] = phase;
+    const flow = FLOWS.google.includes(phase) ? FLOWS.google : FLOWS.sso;
+    const labels = flow[flow.length - 1][4];
+    const done = list ? labels.length : 0;
+    const mark = `<svg class="i"><use href="#${title.startsWith('Redirecting') ? 'i-external' : 'i-shield'}"/></svg>`;
+    $('#st-visual').innerHTML = list
+      ? $('#vf-card .success-ill').outerHTML
+      : `<div class="ring-ill" aria-hidden="true"><span class="arc"></span><span class="ring-core">${mark}</span></div>`;
     $('#st-title').textContent = title;
     $('#st-desc').textContent = desc;
-    const ul = $('#st-list');
-    ul.innerHTML = '';
-    (list || []).forEach((t, i) => {
-      const li = document.createElement('li');
-      li.textContent = t;
-      li.style.animationDelay = (150 + i * 140) + 'ms';
-      ul.appendChild(li);
-    });
+    $('#st-list').innerHTML = labels.map((t, i) =>
+      `<li class="${i < done ? 'done' : i === done ? 'active' : ''}"><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg></span>${t}</li>`).join('');
     restartAnim($('#st-card'), 'swap');
+    // Completing phase: tick each step to done before the welcome card appears
+    if (title.startsWith('Completing')) {
+      const lis = $$('#st-list li'), dt = phase[3] / (lis.length + 1);
+      lis.forEach((li, i) => later(() => { li.className = 'done'; if (lis[i + 1]) lis[i + 1].className = 'active'; }, dt * (i + 1)));
+    }
   }
 
   async function runStatusFlow(kind) {
@@ -617,8 +620,7 @@
     redirect: goRedirect,
     'gt-login': () => show('scr-gothru-login'),
     'st-completing': () => { show('scr-status'); renderStatus(FLOWS.sso[0]); },
-    'st-complete': () => { show('scr-status'); renderStatus(FLOWS.sso[1]); },
-    'st-welcome': () => { show('scr-status'); renderStatus(FLOWS.sso[2]); },
+    'st-welcome': () => { show('scr-status'); renderStatus(FLOWS.sso[1]); },
     'maint-poll': () => { show('scr-app'); showMaintenance(); },
     'maint-recovered': () => { show('scr-app'); showMaintenance(); fillAttempt(1, 0); recovered({ redirect: false }); },
     'maint-fallback': () => { show('scr-app'); showMaintenance({ fallback: true }); },

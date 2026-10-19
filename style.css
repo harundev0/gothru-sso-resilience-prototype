@@ -383,16 +383,12 @@ p { text-wrap: pretty; }
 /* =========================================================
    SCREEN 4 — ORIGINAL status card
    ========================================================= */
-.st-logo { width: 112px; height: 40px; display: block; margin: 0 auto 24px; }
-.st-visual { height: 56px; margin: 0 auto 22px; display: grid; place-items: center; }
-.ring-spin { width: 56px; height: 56px; border-radius: 50%; border: 3px solid #eef0f4; border-right-color: var(--indigo); animation: rot .9s linear infinite; display: block; }
-.ok-badge { width: 56px; height: 56px; border-radius: 50%; background: #e8f1ea; border: 1px solid #bcd6c2; color: var(--green-ok); display: grid; place-items: center; font-size: 26px; font-weight: 700; animation: pop .45s var(--ease-spring) both; }
+/* Sign-in status card (verify style): ring with provider mark, success art on the last phase */
+.st-card .st-visual { display: block; }
+.st-card .ring-core > .i { width: 42px; height: 42px; stroke-width: 1.7; }
+.st-logo { width: 112px; height: 40px; display: block; margin: 0 auto var(--s6); }
 .st-card.swap .st-visual, .st-card.swap h1, .st-card.swap p { animation: fadeUp .35s var(--ease-out) both; }
 .st-card.swap p { animation-delay: .05s; }
-.st-list { list-style: none; padding: 0; margin: 22px auto 0; display: grid; gap: 12px; text-align: left; width: max-content; max-width: 100%; }
-.st-list:empty { display: none; }
-.st-list li { display: flex; gap: 12px; align-items: center; font-size: 14.5px; color: var(--ink-2); animation: fadeUp .4s var(--ease-out) both; }
-.st-list li::before { content: "✓"; width: 20px; height: 20px; border-radius: 50%; background: var(--green-ok); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; flex: none; }
 
 /* =========================================================
    SCREEN 5 — Email

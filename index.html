@@ -419,13 +419,14 @@
 <!-- =========================================================
      SCREEN 4 — ORIGINAL status cards (Completing / Complete / Welcome back)
      ========================================================= -->
-<section class="screen screen-center soft-bg" id="scr-status" data-label="Sign-in status (original)">
-  <div class="card card-status st-card" id="st-card">
+<section class="screen screen-center scene" id="scr-status" data-label="Sign-in status">
+  <div class="horizon" aria-hidden="true"><span class="hz-sun"></span><svg class="hz-mtn"><use href="#ill-mountains"/></svg></div>
+  <div class="card card-status vf-card st-card" id="st-card">
     <svg class="st-logo" role="img" aria-label="GoThru"><use href="#lg-gothru"/></svg>
     <div class="st-visual" id="st-visual"></div>
     <h1 id="st-title">Completing GoThru sign in</h1>
-    <p id="st-desc">Verifying your account and preparing your Panorra session.</p>
-    <ul class="st-list" id="st-list"></ul>
+    <p id="st-desc">Verifying your account and preparing your session.</p>
+    <ol class="steps st-steps" id="st-list"></ol>
   </div>
 </section>
 
@@ -772,7 +773,6 @@
       <button data-jump="redirect">Redirect to SSO</button>
       <button data-jump="gt-login">GoThru SSO login</button>
       <button data-jump="st-completing">Completing sign in</button>
-      <button data-jump="st-complete">Sign in complete</button>
       <button data-jump="st-welcome">Welcome back</button>
       <b>Maintenance modal</b>
       <button data-jump="maint-poll">Polling (0–30s)</button>
