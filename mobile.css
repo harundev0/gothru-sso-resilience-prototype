@@ -209,3 +209,7 @@
 .m-orbit-label { flex: 1; text-align: center; }
 .m-orbit-arrow { width: 38px; height: 38px; padding: 10px; border-radius: 50%; background: rgba(255, 255, 255, .12); flex: none; transition: transform .25s var(--ease-spring), background-color .2s var(--ease-out); }
 .m-orbit-btn:active .m-orbit-arrow { transform: translateX(4px); background: rgba(255, 255, 255, .22); }
+
+/* Street Editor wordmark (street-editor.html): wide two-line logo needs more height than the Panorra one */
+.m-logo.se-logo { height: 36px; }
+.m-mt img.mt-pn[src*="streeteditor"] { height: 22px; border-radius: 5px; }

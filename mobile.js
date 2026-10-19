@@ -6,6 +6,7 @@
 
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const BRAND = document.body.dataset.brand || 'Panorra'; // street-editor.html reuses this flow
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
   const state = { sso: 'down', link: 'valid', speed: 10, email: '', sends: {}, linkUsed: false, resendLeft: 0, history: [], session: '' };
@@ -50,7 +51,7 @@
   async function probe() { const up = state.sso === 'up'; await wait(up ? 280 : 1500); return up; }
 
   const PF_COPY = {
-    run: ['Preparing your sign-in', "We're checking the best way to sign you in to Panorra. This will only take a moment."],
+    run: ['Preparing your sign-in', `We're checking the best way to sign you in to ${BRAND}. This will only take a moment.`],
     ok: ["You're all set", 'GoThru SSO is available. Taking you to secure sign-in...'],
   };
   function setPreflight(result) {
@@ -146,7 +147,7 @@
     $('#ms-email').textContent = state.email || 'you@example.com';
     $('#ms-sub').textContent = resent
       ? "If you don't see the email, please check your spam folder."
-      : 'Click the link in your email to continue to Panorra. The link will expire in 15 minutes.';
+      : `Click the link in your email to continue to ${BRAND}. The link will expire in 15 minutes.`;
     $('#m-resend-msg').hidden = true;
     if (current === 'sent') { const ill = $('#v-sent .mail-ill'); ill.replaceWith(ill.cloneNode(true)); }
     else go('sent');
