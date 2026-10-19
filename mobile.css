@@ -213,3 +213,16 @@
 /* Street Editor wordmark (street-editor.html): wide two-line logo needs more height than the Panorra one */
 .m-logo.se-logo { height: 36px; }
 .m-mt img.mt-pn[src*="streeteditor"] { height: 22px; border-radius: 5px; }
+
+/* Street Editor start: centred login like the native app, GoThru + Apple */
+.se-start-mid { margin: auto 0; text-align: center; }
+.se-start-logo { display: block; width: auto; height: 60px; margin: 0 auto var(--s8, 40px); }
+.se-start .m-title { font-size: 26px; }
+.se-start .m-text { margin-bottom: var(--s6); }
+.se-start .m-stack { text-align: left; }
+.se-apple { gap: 10px; color: #111827; background: #fff; border: 1.5px solid #111827; font-weight: 600; }
+.se-apple:hover:not(:disabled) { background: #f9fafb; }
+.se-apple-ic { width: 20px; height: 20px; translate: 0 -1px; }
+.se-apple-ring { color: #111827; }
+.se-signup { margin: var(--s5) 0 0; font-size: 14px; color: var(--muted); }
+.se-signup a { color: var(--ink); font-weight: 700; }

@@ -99,6 +99,13 @@
     openHome('Emergency session · Google', 'Signed in with Google. Work normally.');
   }
 
+  /* ---------- Apple sign-in (street-editor.html start screen) ---------- */
+  async function runApple() {
+    go('apple');
+    await wait(1600);
+    openHome('', 'Signed in with Apple.');
+  }
+
   /* ---------- Magic link ---------- */
   function openEmail(prefill = state.email) {
     $('#m-email').value = prefill || '';
@@ -264,6 +271,7 @@
   /* ---------- Wire up ---------- */
   $('#m-sso-btn').addEventListener('click', runPreflight);
   $('#m-google').addEventListener('click', runGoogle);
+  if ($('#m-apple')) { $('#m-apple').addEventListener('click', runApple); JUMPS.apple = runApple; }
   $('#m-magic').addEventListener('click', () => openEmail());
   $('#m-email').addEventListener('input', () => { setEmailMsg('', ''); syncSend(); });
   $('#m-form').addEventListener('submit', sendLink);

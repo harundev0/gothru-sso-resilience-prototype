@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="icon" type="image/svg+xml" href="assets/logos/photo-studio.svg">
+<link rel="icon" type="image/png" href="assets/logos/photo-studio.png">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="photo-studio.css">
 </head>
@@ -16,7 +16,7 @@
 
 <!-- Desktop app window chrome (Electron-style title bar) -->
 <div class="ps-titlebar" aria-hidden="true">
-  <img src="assets/logos/photo-studio.svg" alt="" width="16" height="16">
+  <img src="assets/logos/photo-studio.png" alt="" width="16" height="16">
   <span class="ps-tb-name">GoThru Photo Studio 1.1.19</span>
   <span class="ps-tb-menu"><span>Edit</span><span>View</span><span>Window</span><span>Help</span></span>
   <span class="ps-tb-win">
@@ -146,7 +146,7 @@
   <div class="ps-start">
     <div class="ps-brandcol">
       <div class="ps-lockup">
-        <img src="assets/logos/photo-studio.svg" alt="" width="96" height="96">
+        <img src="assets/logos/photo-studio.png" alt="" width="96" height="96">
         <div class="ps-lockup-text">
           <b>GoThru<br>Photo Studio</b>
           <span>Powered by <svg role="img" aria-label="GoThru"><use href="#lg-gothru"/></svg></span>
@@ -173,19 +173,28 @@
         <button class="ps-tool" type="button" aria-label="Language: English"><svg class="i"><use href="#i-globe"/></svg><span>EN</span></button>
       </div>
       <div class="ps-card">
-        <h1 id="gate-title" tabindex="-1">The All-in-One 360° Toolkit</h1>
-        <p class="ps-sub">Get started instantly. Sign in once with your GoThru account to open your photos, tours and projects.</p>
+        <div class="ps-card-top">
+          <img src="assets/logos/photo-studio.png" alt="" width="44" height="44">
+          <span class="ps-chip"><i></i>Desktop · v1.1.19</span>
+        </div>
+        <h1 id="gate-title" tabindex="-1">The All-in-One <em>360°</em> Toolkit</h1>
+        <p class="ps-sub">Sign in once with your GoThru account to open your photos, tours and projects.</p>
         <button class="btn-sso ps-sso" id="login-button" type="button">
-          <img class="sso-mark" src="assets/logos/gothru.png" alt="" width="22" height="22"><span>Continue with GoThru</span>
+          <img class="sso-mark" src="assets/logos/gothru.png" alt="" width="22" height="22"><span>Continue with GoThru</span><svg class="i ps-sso-arrow" aria-hidden="true"><use href="#i-arrow"/></svg>
         </button>
         <p class="probe-hint" id="probe-hint" aria-live="polite"></p>
         <ul class="ps-perks">
-          <li><svg class="i"><use href="#i-image"/></svg>Edit and stitch 360° photos</li>
-          <li><svg class="i"><use href="#i-layers"/></svg>Build tours from your library</li>
-          <li><svg class="i"><use href="#i-cloud"/></svg>Publish across GoThru apps</li>
+          <li class="t1"><svg class="i"><use href="#i-image"/></svg><span>Edit &amp; stitch<small>360° photos</small></span></li>
+          <li class="t2"><svg class="i"><use href="#i-layers"/></svg><span>Build tours<small>from your library</small></span></li>
+          <li class="t3"><svg class="i"><use href="#i-cloud"/></svg><span>Publish<small>to GoThru apps</small></span></li>
         </ul>
-        <p class="ps-signup">Don't have an account? <a href="#">Sign up</a></p>
-        <p class="ps-legal"><a href="#">Terms of Service</a> | <a href="#">Privacy Policy</a> | 2026 © All Rights Reserved | GoThru Media Inc.</p>
+        <div class="ps-family">
+          <span class="ps-stack" aria-hidden="true">
+            <img src="assets/logos/apps/02-logo-Gothru-255.png" alt=""><img src="assets/logos/apps/01-logo-Panorra360-255.png" alt=""><img src="assets/logos/apps/01-logo-StereetEditor-255.png" alt=""><img src="assets/logos/apps/01-logo-TourMKR-255.png" alt=""><img src="assets/logos/apps/01-logo-GoThru-360-Viewer-255.png" alt="">
+          </span>
+          <span>One account for every <b>GoThru app</b></span>
+        </div>
+        <p class="ps-legal"><a href="#">Terms of Service</a><a href="#">Privacy Policy</a><span>© 2026 GoThru Media Inc.</span></p>
       </div>
     </div>
   </div>
@@ -323,7 +332,7 @@
 <section class="screen screen-center scene pf-screen" id="scr-preflight" data-label="Pre-flight check">
   <div class="horizon" aria-hidden="true"><span class="hz-sun"></span><svg class="hz-mtn"><use href="#ill-mountains"/></svg></div>
   <div class="card card-status vf-card pf-card">
-    <div class="vf-brand"><img class="ps-ic" src="assets/logos/photo-studio.svg" alt="" width="30" height="30"><span>GoThru Photo Studio</span></div>
+    <div class="vf-brand"><img class="ps-ic" src="assets/logos/photo-studio.png" alt="" width="30" height="30"><span>GoThru Photo Studio</span></div>
     <div class="ring-ill" aria-hidden="true"><span class="arc"></span><span class="ring-core"><svg class="i ring-cloud"><use href="#i-cloud"/></svg><span class="ring-badge"><svg class="i rb-ok"><use href="#i-check"/></svg></span></span></div>
     <h1 tabindex="-1" id="pf-title">Preparing your sign-in</h1>
     <p id="pf-desc" aria-live="polite">We're checking the best way to sign you in to Photo Studio. This will only take a moment.</p>
@@ -374,7 +383,7 @@
         </article>
         <div class="gt-apps" aria-hidden="true">
           <span class="on"><img src="assets/logos/gothru.png" alt=""></span>
-          <span><img src="assets/logos/photo-studio.svg" alt=""></span>
+          <span><img src="assets/logos/photo-studio.png" alt=""></span>
           <span><img src="assets/logos/streetbuilder.png" alt=""></span>
           <span><img src="assets/logos/tourmkr.png" alt=""></span>
           <span><img src="assets/logos/streeteditor.png" alt=""></span>
@@ -461,7 +470,7 @@
         <div class="mt-card">
           <div class="mt-brand">
             <svg class="mt-gt"><use href="#lg-gothru"/></svg><span class="mt-x">×</span>
-            <img class="mt-pn" src="assets/logos/photo-studio.svg" alt="GoThru Photo Studio" width="20" height="20">
+            <img class="mt-pn" src="assets/logos/photo-studio.png" alt="GoThru Photo Studio" width="20" height="20">
           </div>
           <span class="mt-icon"><svg class="i"><use href="#i-zap"/></svg></span>
           <h2>Your emergency sign-in link</h2>
@@ -485,7 +494,7 @@
 <section class="screen screen-center scene" id="scr-verify" data-label="Magic link verify">
   <div class="horizon" aria-hidden="true"><span class="hz-sun"></span><svg class="hz-mtn"><use href="#ill-mountains"/></svg></div>
   <div class="card card-status vf-card" id="vf-card" data-state="verifying">
-    <div class="vf-brand"><img class="ps-ic" src="assets/logos/photo-studio.svg" alt="" width="30" height="30"><span>GoThru Photo Studio</span></div>
+    <div class="vf-brand"><img class="ps-ic" src="assets/logos/photo-studio.png" alt="" width="30" height="30"><span>GoThru Photo Studio</span></div>
 
     <div class="vf-view" data-v="verifying">
       <div class="ring-ill" aria-hidden="true"><span class="arc"></span><span class="ring-core"><svg class="i"><use href="#i-link"/></svg></span></div>
@@ -591,7 +600,7 @@
 <section class="screen" id="scr-dashboard" data-label="Photo Studio dashboard">
   <div class="db">
     <aside class="db-side">
-      <a class="db-brand" href="#"><img class="pn-icon" src="assets/logos/photo-studio.svg" alt="" width="32" height="32">Photo Studio</a>
+      <a class="db-brand" href="#"><img class="pn-icon" src="assets/logos/photo-studio.png" alt="" width="32" height="32">Photo Studio</a>
       <nav class="db-nav" aria-label="Dashboard">
         <a class="on" href="#"><svg class="i"><use href="#i-home"/></svg>Dashboard</a>
         <a href="#"><svg class="i"><use href="#i-compass"/></svg>My tours</a>
@@ -609,7 +618,7 @@
 
     <div class="db-main">
       <header class="db-top">
-        <a class="db-mbrand" href="#" aria-label="GoThru Photo Studio"><img class="pn-icon" src="assets/logos/photo-studio.svg" alt="" width="32" height="32"></a>
+        <a class="db-mbrand" href="#" aria-label="GoThru Photo Studio"><img class="pn-icon" src="assets/logos/photo-studio.png" alt="" width="32" height="32"></a>
         <div class="db-search"><svg class="i"><use href="#i-search"/></svg><input type="search" placeholder="Search tours, places…" aria-label="Search"></div>
         <span class="chip chip-blue" id="db-session-chip" hidden></span>
         <div class="db-user">
