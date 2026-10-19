@@ -1,0 +1,97 @@
+/* GoThru Photo Studio (desktop app) — layout on top of style.css.
+   photo-studio.html reuses index.html's flow and app.js; only the window chrome and the start screen differ. */
+
+.ps-page { --tb: 32px; padding-top: var(--tb); background: #fff; }
+.ps-page .screen, .ps-page .gt-login, .ps-page .db { min-height: calc(100dvh - var(--tb)); }
+.ps-page .db-side { top: var(--tb); height: calc(100dvh - var(--tb)); }
+.ps-page .overlay { top: var(--tb); }
+
+/* Title bar */
+.ps-titlebar { position: fixed; inset: 0 0 auto; z-index: 95; height: var(--tb); display: flex; align-items: center; gap: 14px; padding-left: 10px; background: #fff; border-bottom: 1px solid #eef0f4; font-size: 12.5px; color: #1f2937; user-select: none; }
+.ps-titlebar img { width: 16px; height: 16px; }
+.ps-tb-name { font-weight: 500; }
+.ps-tb-menu { display: flex; gap: 2px; }
+.ps-tb-menu span { padding: 4px 8px; border-radius: 6px; }
+.ps-tb-menu span:hover { background: #f3f4f6; }
+.ps-tb-win { margin-left: auto; display: flex; height: 100%; }
+.ps-tb-win svg { width: 46px; height: 100%; padding: 0 18px; fill: none; stroke: #374151; stroke-width: 1; }
+.ps-tb-win svg:hover { background: #f3f4f6; }
+.ps-tb-win svg:last-child:hover { background: #e81123; stroke: #fff; }
+
+/* Start screen: pastel canvas like the original app */
+#scr-app { background:
+  radial-gradient(60% 70% at 8% 10%, #fde2e4 0%, transparent 60%),
+  radial-gradient(50% 60% at 45% 75%, #f9d4f0 0%, transparent 65%),
+  radial-gradient(55% 65% at 95% 85%, #bfdbfe 0%, transparent 65%),
+  radial-gradient(45% 55% at 85% 10%, #e0e7ff 0%, transparent 60%),
+  #fbf3f8; }
+.ps-start { min-height: calc(100dvh - var(--tb)); max-width: 1200px; margin: 0 auto; padding: 40px 32px; display: grid; grid-template-columns: 1.1fr 400px; gap: 64px; align-items: center; }
+
+.ps-brandcol { display: grid; justify-items: center; gap: 28px; }
+.ps-lockup { display: flex; align-items: center; gap: 18px; }
+.ps-lockup img { width: 96px; height: 96px; filter: drop-shadow(0 10px 18px rgba(217, 119, 6, .25)); }
+.ps-lockup-text b { display: block; font: 700 46px/1.05 'Plus Jakarta Sans', var(--font); letter-spacing: -.02em; color: #0b0f19; }
+.ps-lockup-text span { display: flex; align-items: center; justify-content: flex-end; gap: 6px; margin-top: 8px; font-size: 15px; color: #6b7280; }
+.ps-lockup-text span svg { width: 56px; height: 20px; }
+
+/* Laptop mock with a mini Photo Studio UI */
+.ps-laptop { width: min(100%, 470px); }
+.ps-lid { margin: 0 26px; padding: 10px 10px 14px; border-radius: 18px 18px 4px 4px; background: #1c1d21; box-shadow: inset 0 0 0 2px #3a3b40; }
+.ps-scr { border-radius: 6px; overflow: hidden; background: #24262b; aspect-ratio: 16 / 10; display: flex; flex-direction: column; }
+.ps-app-bar { flex: none; display: flex; align-items: center; gap: 6px; height: 18px; padding: 0 8px; background: #2d3036; }
+.ps-app-bar svg { width: 26px; height: 9px; }
+.ps-crumb { width: 34%; height: 4px; border-radius: 2px; background: #4b5059; }
+.ps-app-bar em { margin-left: auto; width: 26px; height: 8px; border-radius: 3px; background: #2563eb; }
+.ps-app-bar em + em { margin-left: 0; background: #4b5059; }
+.ps-app-bar em.go { width: 34px; background: #16a34a; }
+.ps-app { flex: 1; display: grid; grid-template-columns: 38% 1fr; min-height: 0; }
+.ps-grid { display: grid; grid-template-columns: repeat(4, 1fr); align-content: start; gap: 5px; padding: 7px; border-right: 1px solid #33363c; }
+.ps-grid i { aspect-ratio: 4 / 3; border-radius: 2px; background: hsl(var(--h) 45% 62%); }
+.ps-grid i:nth-child(4) { outline: 1.5px solid #3b82f6; outline-offset: 1px; }
+.ps-view { display: flex; flex-direction: column; gap: 6px; padding: 7px; min-width: 0; }
+.ps-pano { flex: 1; aspect-ratio: auto; border-radius: 4px; background: #f3d9c4; color: #9a5b3c; }
+.ps-pano .pano-sun { width: 18%; height: auto; aspect-ratio: 1; background: #fde68a; }
+.ps-pano .hotspot { width: 10px; height: 10px; border-width: 3px; }
+.ps-meta { flex: none; display: grid; gap: 3px; padding: 5px; border-radius: 3px; background: #2d3036; }
+.ps-meta span { height: 3px; width: 60%; border-radius: 2px; background: #4b5059; }
+.ps-meta span:nth-child(2) { width: 42%; }
+.ps-meta span:nth-child(3) { width: 30%; }
+.ps-base { position: relative; height: 14px; border-radius: 2px 2px 12px 12px; background: linear-gradient(#c9cdd3, #8b9098); box-shadow: 0 26px 30px -18px rgba(15, 23, 42, .45); }
+.ps-base span { position: absolute; left: 50%; top: 0; width: 18%; height: 6px; translate: -50% 0; border-radius: 0 0 8px 8px; background: #a3a8b0; }
+
+/* Login card */
+.ps-cardcol { display: grid; gap: 12px; }
+.ps-tools { display: flex; justify-content: flex-end; gap: 8px; }
+.ps-tool { display: inline-flex; align-items: center; gap: 6px; height: 36px; min-width: 36px; padding: 0 10px; justify-content: center; border: 0; border-radius: 999px; background: #fff; color: #111827; font-size: 12px; font-weight: 600; box-shadow: 0 4px 14px -6px rgba(15, 23, 42, .25); }
+.ps-tool:hover { background: #f9fafb; }
+.ps-tool .i { width: 17px; height: 17px; }
+.ps-card { padding: 28px 24px 22px; border-radius: 16px; background: rgba(255, 255, 255, .92); box-shadow: 0 30px 60px -30px rgba(30, 27, 75, .35), 0 0 0 1px rgba(15, 23, 42, .04); backdrop-filter: blur(8px); }
+.ps-card h1 { margin: 0 0 6px; font-size: 20px; font-weight: 700; letter-spacing: -.01em; }
+.ps-sub { margin: 0; font-size: 13.5px; color: #6b7280; }
+.ps-sso.btn-sso { height: 46px; margin-top: 22px; border: 0; background: var(--blue); color: #fff; font-weight: 600; }
+.ps-sso.btn-sso:hover:not(:disabled) { background: var(--blue-700); color: #fff; border-color: transparent; }
+.ps-sso.btn-sso:disabled { color: #fff; opacity: .85; }
+.ps-sso.btn-sso .spin { color: #fff; }
+.ps-sso .sso-mark { padding: 2px; border-radius: 50%; background: #fff; }
+.ps-perks { list-style: none; display: grid; gap: 10px; margin: 22px 0 0; padding: 16px 0 0; border-top: 1px solid var(--line); font-size: 13.5px; color: #374151; }
+.ps-perks li { display: flex; align-items: center; gap: 10px; }
+.ps-perks .i { width: 28px; height: 28px; padding: 6px; border-radius: 8px; background: var(--blue-50); color: var(--blue); flex: none; }
+.ps-signup { margin: 20px 0 0; text-align: center; font-size: 13.5px; color: #374151; }
+.ps-signup a { color: var(--blue); }
+.ps-legal { margin: 16px 0 0; font-size: 12px; line-height: 1.6; color: #9ca3af; }
+.ps-legal a { color: inherit; text-decoration: none; }
+.ps-legal a:hover { text-decoration: underline; }
+
+/* Brand in the status cards and dashboard */
+.vf-brand .ps-ic { width: 30px; height: 30px; }
+.db-brand .pn-icon { width: 30px; height: 30px; }
+
+@media (max-width: 960px) {
+  .ps-start { grid-template-columns: 1fr; gap: 32px; padding: 32px 20px; max-width: 520px; }
+  .ps-laptop { display: none; }
+  .ps-lockup img { width: 64px; height: 64px; }
+  .ps-lockup-text b { font-size: 32px; }
+}
+@media (max-width: 560px) {
+  .ps-tb-menu { display: none; }
+}

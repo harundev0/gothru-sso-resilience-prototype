@@ -6,6 +6,7 @@
 
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const BRAND = document.body.dataset.brand || 'Panorra'; // photo-studio.html reuses this flow
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
   const state = {
@@ -86,7 +87,8 @@
     show('scr-app');
     resetBtn($('#login-button'));
     $('#probe-hint').textContent = '';
-    openOverlay('gate');
+    if (overlay.querySelector('.modal-gate')) openOverlay('gate');
+    else { closeOverlay(); focusTitle($('#scr-app')); } // photo-studio.html: the gate is an inline card, not a modal
   }
 
   async function handleLoginClick() {
@@ -100,7 +102,7 @@
   // Pre-flight screen: steps 1-3 advance on timers, step 4 spins until the real probe resolves
   const PF_STEP_MS = 650;
   const PF_COPY = {
-    run: ['Preparing your sign-in', "We're checking the best way to sign you in to Panorra. This will only take a moment."],
+    run: ['Preparing your sign-in', `We're checking the best way to sign you in to ${BRAND}. This will only take a moment.`],
     ok: ["You're all set", 'GoThru SSO is available. Taking you to secure sign-in...'],
   };
   function setPreflight(result) {
@@ -295,7 +297,7 @@
     $('#sent-email').textContent = state.email || 'you@example.com';
     $('#sent-sub').textContent = resent
       ? "If you don't see the email, please check your spam folder."
-      : 'Click the link in your email to continue to Panorra. The link will expire in 15 minutes.';
+      : `Click the link in your email to continue to ${BRAND}. The link will expire in 15 minutes.`;
     $('#resend-msg').hidden = true;
     const ill = $('.mail-ill', modal);
     ill.replaceWith(ill.cloneNode(true)); // replay entrance animation
@@ -396,17 +398,17 @@
 
   const FLOWS = {
     sso: [
-      ['spin', 'Completing GoThru sign in', 'Verifying your account and preparing your Panorra session.', 1800],
-      ['check', 'Sign in complete', 'Your GoThru account is verified. Loading your Panorra profile.', 1500],
-      ['check', 'Welcome back, Eko Syaepulloh Qa', 'Everything is ready. Taking you to Panorra now.', 2300,
-        ['GoThru account verified', 'Panorra session created', 'Profile loaded']],
+      ['spin', 'Completing GoThru sign in', `Verifying your account and preparing your ${BRAND} session.`, 1800],
+      ['check', 'Sign in complete', `Your GoThru account is verified. Loading your ${BRAND} profile.`, 1500],
+      ['check', 'Welcome back, Eko Syaepulloh Qa', `Everything is ready. Taking you to ${BRAND} now.`, 2300,
+        ['GoThru account verified', `${BRAND} session created`, 'Profile loaded']],
     ],
     google: [
       ['spin', 'Redirecting to Google…', 'Opening Google sign-in to verify your email ownership.', 1300],
-      ['spin', 'Completing Google sign in', 'Verifying your Google account and preparing your Panorra session.', 1700],
-      ['check', 'Sign in complete', 'Your Google account is verified. Loading your Panorra profile.', 1500],
-      ['check', 'Welcome back, Eko Syaepulloh Qa', 'Everything is ready. Taking you to Panorra now.', 2300,
-        ['Google account verified', 'Panorra session created', 'Profile loaded']],
+      ['spin', 'Completing Google sign in', `Verifying your Google account and preparing your ${BRAND} session.`, 1700],
+      ['check', 'Sign in complete', `Your Google account is verified. Loading your ${BRAND} profile.`, 1500],
+      ['check', 'Welcome back, Eko Syaepulloh Qa', `Everything is ready. Taking you to ${BRAND} now.`, 2300,
+        ['Google account verified', `${BRAND} session created`, 'Profile loaded']],
     ],
   };
 

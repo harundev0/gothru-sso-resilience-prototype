@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- GoThru Photo Studio icon (approximation of the app icon: yellow body, round lens with a landscape) -->
+  <defs>
+    <linearGradient id="ps-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc4f0"/><stop offset="1" stop-color="#d9f0fb"/></linearGradient>
+    <clipPath id="ps-lens"><circle cx="32" cy="32" r="17"/></clipPath>
+  </defs>
+  <path d="M18 4h28a6 6 0 0 1 6 6v6a6 6 0 0 0 0 32v6a6 6 0 0 1-6 6H18a6 6 0 0 1-6-6v-6a6 6 0 0 0 0-32v-6a6 6 0 0 1 6-6z" fill="#fbbf16"/>
+  <circle cx="32" cy="32" r="21" fill="#1f2937"/>
+  <g clip-path="url(#ps-lens)">
+    <rect x="14" y="14" width="36" height="36" fill="url(#ps-sky)"/>
+    <path d="M14 38 L24 27 L29 32 L36 23 L50 37 V50 H14Z" fill="#5b7fa6"/>
+    <path d="M24 27 L21 30.5 L24 30 L26 31.6Z M36 23 L32.5 27.6 L36 26.6 L39 28Z" fill="#fff"/>
+    <path d="M14 42 Q26 35 50 41 V50 H14Z" fill="#5fae5a"/>
+  </g>
+  <circle cx="32" cy="32" r="17" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.2"/>
+</svg>

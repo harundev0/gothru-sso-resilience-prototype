@@ -6,6 +6,7 @@ It follows the *Keycloak Downtime Risk Mitigation* task specs.
 **Live demo:** https://harundev0.github.io/gothru-sso-resilience-prototype/
 **Mobile app version:** https://harundev0.github.io/gothru-sso-resilience-prototype/mobile.html
 **Street Editor app version:** https://harundev0.github.io/gothru-sso-resilience-prototype/street-editor.html
+**Photo Studio desktop version:** https://harundev0.github.io/gothru-sso-resilience-prototype/photo-studio.html
 
 ## Flows covered
 
