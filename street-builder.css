@@ -1,0 +1,24 @@
+/* Street Builder (desktop app) — dark login like the original, on top of style.css + photo-studio.css.
+   street-builder.html reuses index.html's flow and app.js; only the window chrome and the start screen differ. */
+
+/* Dark title bar */
+.sb-page .ps-titlebar { background: #1c1f24; border-bottom-color: #23272e; color: #9aa3ad; }
+.sb-page .ps-tb-name { font-weight: 400; }
+.sb-page .ps-tb-win svg { stroke: #9aa3ad; }
+.sb-page .ps-tb-win svg:hover { background: #2a2e35; }
+.sb-page .ps-tb-win svg:last-child:hover { background: #e81123; stroke: #fff; }
+
+/* Start screen */
+.sb-page #scr-app { background: #0d0d0e; }
+.sb-start { min-height: calc(100dvh - var(--tb)); display: grid; place-items: center; padding: 32px 16px; }
+.sb-card { width: 100%; max-width: 340px; padding: 30px 26px 28px; border: 1px solid #2a2c30; border-radius: 12px; background: #19191b; color: #e5e7eb; text-align: center; box-shadow: 0 24px 60px -30px rgba(0, 0, 0, .9); }
+.sb-logo { display: block; width: 52px; height: 52px; margin: 0 auto 14px; }
+.sb-card h1 { margin: 0 0 8px; font-size: 18px; font-weight: 700; letter-spacing: -.01em; color: #f9fafb; }
+.sb-desc { margin: 0 auto; max-width: 240px; font-size: 12px; line-height: 1.55; color: #9ca3af; }
+.sb-sso.btn-sso { position: relative; height: 44px; margin-top: 24px; padding: 0 48px; border: 0; border-radius: 8px; background: #4b9cbf; color: #fff; font-size: 13.5px; font-weight: 600; box-shadow: 0 12px 24px -14px rgba(75, 156, 191, .9); }
+.sb-sso.btn-sso:hover:not(:disabled) { background: #3f8aab; color: #fff; border-color: transparent; }
+.sb-sso.btn-sso:disabled { color: #fff; opacity: .85; }
+.sb-sso.btn-sso .spin { color: #fff; }
+.sb-sso-tile { position: absolute; left: 6px; top: 50%; translate: 0 -50%; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 6px; background: #fff; }
+.sb-sso .sso-mark { width: 20px; height: 20px; }
+.sb-card .probe-hint { color: #9ca3af; }

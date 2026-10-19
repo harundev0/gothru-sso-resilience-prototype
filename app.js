@@ -418,7 +418,7 @@
     const done = list ? labels.length : 0;
     const mark = `<svg class="i"><use href="#${title.startsWith('Redirecting') ? 'i-external' : 'i-shield'}"/></svg>`;
     $('#st-visual').innerHTML = list
-      ? $('#vf-card .success-ill').outerHTML
+      ? $('#vf-card .success-ill').outerHTML.replace(/sx-(clip|sky|ring|range)/g, 'sw-$1') // own ids, or the verify card's clip/gradients resolve to this hidden copy
       : `<div class="ring-ill" aria-hidden="true"><span class="arc"></span><span class="ring-core">${mark}</span></div>`;
     $('#st-title').textContent = title;
     $('#st-desc').textContent = desc;
