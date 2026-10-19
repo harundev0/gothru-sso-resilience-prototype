@@ -224,5 +224,3 @@
 .se-apple:hover:not(:disabled) { background: #f9fafb; }
 .se-apple-ic { width: 20px; height: 20px; translate: 0 -1px; }
 .se-apple-ring { color: #111827; }
-.se-signup { margin: var(--s5) 0 0; font-size: 14px; color: var(--muted); }
-.se-signup a { color: var(--ink); font-weight: 700; }
