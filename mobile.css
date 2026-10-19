@@ -220,7 +220,19 @@
 .se-start .m-title { font-size: 26px; }
 .se-start .m-text { margin-bottom: var(--s6); }
 .se-start .m-stack { text-align: left; }
-.se-apple { gap: 10px; color: #111827; background: #fff; border: 1.5px solid #111827; font-weight: 600; }
-.se-apple:hover:not(:disabled) { background: #f9fafb; }
+/* Login buttons in the Photo Studio style: logo in a white tile on the left, label centred */
+.se-btn { position: relative; height: 54px; padding: 0 56px; border: 0; border-radius: 14px; color: #fff; font-weight: 600; }
+.se-btn:active:not(:disabled) { transform: scale(.98); }
+.se-btn-gt { background: #0b63e5; box-shadow: 0 14px 26px -14px rgba(11, 99, 229, .9); }
+.se-btn-gt:hover:not(:disabled) { background: #0a55c4; }
+.se-btn-apple { background: #000; box-shadow: 0 14px 26px -14px rgba(0, 0, 0, .7); }
+.se-btn-apple:hover:not(:disabled) { background: #1f1f1f; }
+.se-btn-tile { position: absolute; left: 8px; top: 50%; translate: 0 -50%; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; background: #fff; color: #000; }
 .se-apple-ic { width: 20px; height: 20px; translate: 0 -1px; }
+.se-btn-tile img { width: 22px; height: 22px; }
 .se-apple-ring { color: #111827; }
+
+/* Login success screens (street-editor.html) */
+.m-logo.m-gt { width: 93px; height: 32px; }
+.m-view .ring-core .m-shield { width: 40px; height: 40px; stroke-width: 1.7; }
+.m-status-steps { margin-top: var(--s5); }

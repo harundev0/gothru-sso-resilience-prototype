@@ -160,6 +160,11 @@
       </div>
     </div>
     <div class="pp-jumps">
+      <b>Login success</b>
+      <button data-go="completing">Completing sign in</button>
+      <button data-go="welcome">Welcome back</button>
+    </div>
+    <div class="pp-jumps">
       <b>Jump to screen</b>
       <button data-go="start">Start</button>
       <button data-go="apple">Apple sign-in</button>
@@ -198,8 +203,8 @@
           <h1 class="m-title">Login to GoThru</h1>
           <p class="m-text">Choose how you want to sign in to Street Editor.</p>
           <div class="m-stack">
-            <button class="btn btn-block btn-lg m-orbit-btn" id="m-sso-btn" type="button"><span class="m-orbit-mark"><img class="sso-mark" src="assets/logos/gothru.png" alt="" width="22" height="22"></span><span class="m-orbit-label">Continue with GoThru</span><svg class="i m-orbit-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></button>
-            <button class="btn btn-block btn-lg se-apple" id="m-apple" type="button"><svg class="se-apple-ic" aria-hidden="true"><use href="#lg-apple"/></svg>Continue with Apple</button>
+            <button class="btn btn-block btn-lg se-btn se-btn-gt" id="m-sso-btn" type="button"><span class="se-btn-tile"><img src="assets/logos/gothru.png" alt="" width="22" height="22"></span>Continue with GoThru</button>
+            <button class="btn btn-block btn-lg se-btn se-btn-apple" id="m-apple" type="button"><span class="se-btn-tile"><svg class="se-apple-ic" aria-hidden="true"><use href="#lg-apple"/></svg></span>Continue with Apple</button>
           </div>
         </div>
         <p class="m-legal m-foot">By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
@@ -522,6 +527,27 @@
           <div class="ring-ill" aria-hidden="true"><span class="arc"></span><span class="ring-core"><svg class="m-g se-apple-ring"><use href="#lg-apple"/></svg></span></div>
           <h1 class="m-title" tabindex="-1">Signing in with Apple</h1>
           <p class="m-text">Confirming your Apple ID and linking it to your Street Editor profile.</p>
+        </div>
+      </section>
+
+      <!-- Login success: completing sign in, then welcome back -->
+      <section class="m-view m-center" id="v-completing" data-label="Completing sign in">
+        <header class="m-head"><svg class="m-logo m-gt" role="img" aria-label="GoThru"><use href="#lg-gothru"/></svg></header>
+        <div class="m-body-mid">
+          <div class="ring-ill" aria-hidden="true"><span class="arc"></span><span class="ring-core"><svg class="i m-shield"><use href="#i-shield"/></svg></span></div>
+          <h1 class="m-title" tabindex="-1">Completing GoThru sign in</h1>
+          <p class="m-text">Verifying your account and preparing your Street Editor session.</p>
+          <ol class="steps m-status-steps" id="mc-steps"></ol>
+        </div>
+      </section>
+
+      <section class="m-view m-center" id="v-welcome" data-label="Welcome back">
+        <header class="m-head"><svg class="m-logo m-gt" role="img" aria-label="GoThru"><use href="#lg-gothru"/></svg></header>
+        <div class="m-body-mid">
+          <div class="mw-ill"></div>
+          <h1 class="m-title" tabindex="-1">Welcome back, Eko Syaepulloh Qa</h1>
+          <p class="m-text">Everything is ready. Taking you to Street Editor now.</p>
+          <ol class="steps m-status-steps" id="mw-steps"></ol>
         </div>
       </section>
 

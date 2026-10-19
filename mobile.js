@@ -89,6 +89,32 @@
     const bar = $('#m-progress');
     bar.classList.remove('run'); void bar.offsetWidth; bar.classList.add('run');
     await wait(1700);
+    if ($('#v-completing')) runSignedIn();
+    else openHome('', 'Signed in with GoThru.');
+  }
+
+  /* ---------- Login success (street-editor.html): steps tick to done, then welcome back ---------- */
+  const STATUS_STEPS = ['GoThru account verified', `${BRAND} session created`, 'Profile loaded'];
+  const statusSteps = done => STATUS_STEPS.map((t, i) =>
+    `<li class="${i < done ? 'done' : i === done ? 'active' : ''}"><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg></span>${t}</li>`).join('');
+  function showWelcome() {
+    // own ids: url(#...) refs into the hidden Signed-in view don't paint
+    $('#v-welcome .mw-ill').innerHTML = $('#v-success .success-ill').outerHTML.replace(/sx-(clip|sky|ring|range)/g, 'sw-$1');
+    $('#mw-steps').innerHTML = statusSteps(STATUS_STEPS.length);
+    go('welcome');
+  }
+  async function runSignedIn() {
+    $('#mc-steps').innerHTML = statusSteps(0);
+    go('completing');
+    const lis = $$('#mc-steps li');
+    for (let i = 0; i < lis.length; i++) {
+      await wait(800);
+      lis[i].className = 'done';
+      if (lis[i + 1]) lis[i + 1].className = 'active';
+    }
+    await wait(500);
+    showWelcome();
+    await wait(2400);
     openHome('', 'Signed in with GoThru.');
   }
 
@@ -271,6 +297,7 @@
   /* ---------- Wire up ---------- */
   $('#m-sso-btn').addEventListener('click', runPreflight);
   $('#m-google').addEventListener('click', runGoogle);
+  if ($('#v-completing')) Object.assign(JUMPS, { completing: runSignedIn, welcome: showWelcome });
   if ($('#m-apple')) { $('#m-apple').addEventListener('click', runApple); JUMPS.apple = runApple; }
   $('#m-magic').addEventListener('click', () => openEmail());
   $('#m-email').addEventListener('input', () => { setEmailMsg('', ''); syncSend(); });

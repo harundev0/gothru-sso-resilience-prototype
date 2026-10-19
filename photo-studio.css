@@ -20,17 +20,17 @@
 
 /* Start screen: pastel canvas like the original app */
 #scr-app { background:
-  radial-gradient(60% 70% at 8% 10%, #fde2e4 0%, transparent 60%),
-  radial-gradient(50% 60% at 45% 75%, #f9d4f0 0%, transparent 65%),
-  radial-gradient(55% 65% at 95% 85%, #bfdbfe 0%, transparent 65%),
-  radial-gradient(45% 55% at 85% 10%, #e0e7ff 0%, transparent 60%),
-  #fbf3f8; }
+  radial-gradient(40% 60% at 4% 18%, #fdd6d8 0%, transparent 70%),
+  radial-gradient(28% 70% at 44% 60%, #f6bde9 0%, transparent 70%),
+  radial-gradient(40% 55% at 100% 4%, #e3e6ff 0%, transparent 70%),
+  radial-gradient(48% 62% at 92% 92%, #a9cdf8 0%, transparent 72%),
+  linear-gradient(100deg, #fde4e6 0%, #fbe1f1 40%, #e9e3fb 70%, #d6e6fb 100%); }
 .ps-start { min-height: calc(100dvh - var(--tb)); max-width: 1200px; margin: 0 auto; padding: 40px 32px; display: grid; grid-template-columns: 1.1fr 400px; gap: 64px; align-items: center; }
 
 .ps-brandcol { display: grid; justify-items: center; gap: 28px; }
 .ps-lockup { display: flex; align-items: center; gap: 18px; }
-.ps-lockup img { width: 96px; height: 96px; filter: drop-shadow(0 10px 18px rgba(217, 119, 6, .25)); }
-.ps-lockup-text b { display: block; font: 700 46px/1.05 'Plus Jakarta Sans', var(--font); letter-spacing: -.02em; color: #0b0f19; }
+.ps-lockup img { width: 104px; height: 104px; }
+.ps-lockup-text b { display: block; font: 600 46px/1.15 var(--font); letter-spacing: -.01em; color: #0b0f19; }
 .ps-lockup-text span { display: flex; align-items: center; justify-content: flex-end; gap: 6px; margin-top: 8px; font-size: 15px; color: #6b7280; }
 .ps-lockup-text span svg { width: 56px; height: 20px; }
 
@@ -57,48 +57,32 @@
 .ps-meta span:nth-child(2) { width: 42%; }
 .ps-meta span:nth-child(3) { width: 30%; }
 .ps-base { position: relative; height: 14px; border-radius: 2px 2px 12px 12px; background: linear-gradient(#c9cdd3, #8b9098); box-shadow: 0 26px 30px -18px rgba(15, 23, 42, .45); }
+.ps-base em { position: absolute; left: 50%; top: 1px; translate: -50% 0; font: 500 8px/1 var(--font); font-style: normal; color: #4b5563; }
 .ps-base span { position: absolute; left: 50%; top: 0; width: 18%; height: 6px; translate: -50% 0; border-radius: 0 0 8px 8px; background: #a3a8b0; }
 
-/* Login card */
-.ps-cardcol { display: grid; gap: 12px; }
+/* Login card: same look as the original Photo Studio login, one GoThru button */
+.ps-start { grid-template-columns: 1fr 372px; gap: 160px; max-width: 1180px; }
+.ps-cardcol { display: grid; gap: 10px; }
 .ps-tools { display: flex; justify-content: flex-end; gap: 8px; }
-.ps-tool { display: inline-flex; align-items: center; gap: 6px; height: 36px; min-width: 36px; padding: 0 10px; justify-content: center; border: 0; border-radius: 999px; background: #fff; color: #111827; font-size: 12px; font-weight: 600; box-shadow: 0 4px 14px -6px rgba(15, 23, 42, .25); }
-.ps-tool:hover { background: #f9fafb; }
-.ps-tool .i { width: 17px; height: 17px; }
-.ps-card { position: relative; overflow: hidden; padding: 26px 26px 20px; border-radius: 20px; background: rgba(255, 255, 255, .94); box-shadow: 0 30px 60px -30px rgba(30, 27, 75, .35), 0 0 0 1px rgba(15, 23, 42, .05); backdrop-filter: blur(8px); }
-.ps-card::before { content: ""; position: absolute; top: -64px; right: -64px; width: 150px; height: 150px; border-radius: 50%; border: 18px solid #fef3c7; opacity: .7; pointer-events: none; } /* lens ring echoing the app icon */
-.ps-card > * { position: relative; }
-.ps-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
-.ps-card-top img { width: 44px; height: 44px; filter: drop-shadow(0 6px 10px rgba(217, 119, 6, .25)); }
-.ps-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: #fff; border: 1px solid #fde68a; font-size: 11.5px; font-weight: 600; color: #92400e; }
-.ps-chip i { width: 6px; height: 6px; border-radius: 50%; background: #f59e0b; }
-.ps-card h1 { margin: 0 0 6px; font: 700 22px/1.25 'Plus Jakarta Sans', var(--font); letter-spacing: -.015em; }
-.ps-card h1 em { font-style: normal; color: var(--blue); }
+.ps-tool { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: #fff; color: #111; box-shadow: 0 2px 8px -2px rgba(15, 23, 42, .25); }
+.ps-tool:hover { background: #f3f4f6; }
+.ps-tool .i { width: 17px; height: 17px; stroke-width: 2.4; }
+.ps-flag { width: 18px; height: 18px; }
+.ps-card { padding: 30px 28px 22px; border-radius: 20px; background: rgba(255, 255, 255, .9); box-shadow: 0 30px 60px -30px rgba(30, 27, 75, .35), 0 0 0 1px rgba(255, 255, 255, .8) inset; backdrop-filter: blur(10px); }
+.ps-card h1 { margin: 0 0 8px; font: 700 23px/1.2 'Plus Jakarta Sans', var(--font); letter-spacing: -.02em; color: #0b0f19; }
+.ps-card h1 em { font-style: normal; color: #0b63e5; }
 .ps-sub { margin: 0; font-size: 13.5px; color: #6b7280; }
-.ps-sso.btn-sso { position: relative; height: 50px; margin-top: 20px; padding: 0 8px; border: 0; border-radius: 12px; background: var(--blue); color: #fff; font-weight: 600; box-shadow: 0 12px 24px -12px rgba(37, 99, 235, .8); }
-.ps-sso.btn-sso:hover:not(:disabled) { background: var(--blue-700); color: #fff; border-color: transparent; }
+.ps-sso.btn-sso { position: relative; height: 52px; margin-top: 24px; padding: 0 8px; gap: 8px; border: 0; border-radius: 14px; background: #0b63e5; color: #fff; font-size: 15px; font-weight: 600; box-shadow: 0 14px 26px -14px rgba(11, 99, 229, .9); }
+.ps-sso.btn-sso:hover:not(:disabled) { background: #0a55c4; color: #fff; border-color: transparent; }
 .ps-sso.btn-sso:disabled { color: #fff; opacity: .85; }
 .ps-sso.btn-sso .spin { color: #fff; }
-.ps-sso .sso-mark { position: absolute; left: 8px; width: 34px; height: 34px; padding: 6px; border-radius: 9px; background: #fff; }
-.ps-sso-arrow { position: absolute; right: 16px; width: 18px; height: 18px; transition: transform .15s var(--ease-out); }
-.ps-sso:hover .ps-sso-arrow { transform: translateX(3px); }
-.ps-perks { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 18px 0 0; padding: 0; }
-.ps-perks li { display: grid; gap: 8px; padding: 12px 10px; border-radius: 12px; font-size: 12.5px; font-weight: 600; color: #111827; line-height: 1.25; }
-.ps-perks small { display: block; font-weight: 400; color: #6b7280; font-size: 11.5px; }
-.ps-perks .i { width: 30px; height: 30px; padding: 7px; border-radius: 9px; background: #fff; }
-.ps-perks .t1 { background: #fef9e7; } .ps-perks .t1 .i { color: #d97706; }
-.ps-perks .t2 { background: #eff6ff; } .ps-perks .t2 .i { color: var(--blue); }
-.ps-perks .t3 { background: #fdf2f8; } .ps-perks .t3 .i { color: #db2777; }
-.ps-family { display: flex; align-items: center; gap: 12px; margin-top: 18px; padding: 10px 12px; border-radius: 12px; border: 1px dashed #e5e7eb; font-size: 12.5px; color: #4b5563; }
-.ps-family b { color: #111827; }
-.ps-stack { display: flex; flex: none; }
-.ps-stack img { width: 26px; height: 26px; padding: 3px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 2px #fff, 0 2px 6px rgba(15, 23, 42, .15); object-fit: contain; }
-.ps-stack img + img { margin-left: -7px; }
-.ps-legal { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 0; margin: 16px 0 0; font-size: 11.5px; color: #9ca3af; }
-.ps-legal a + a::before { content: "·"; margin: 0 8px; }
+.ps-sso-tile { position: absolute; left: 7px; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; background: #fff; }
+.ps-sso .sso-mark { width: 22px; height: 22px; }
+.ps-legal { display: flex; flex-wrap: wrap; justify-content: center; margin: 24px 0 0; padding-top: 16px; border-top: 1px solid #eef0f4; font-size: 11.5px; line-height: 1.7; color: #9ca3af; }
+.ps-legal a { color: #6b7280; text-decoration: none; }
+.ps-legal a + a::before { content: "·"; margin: 0 8px; color: #d1d5db; }
+.ps-legal a:hover { color: #0b63e5; }
 .ps-legal span { flex-basis: 100%; text-align: center; }
-.ps-legal a { color: inherit; text-decoration: none; }
-.ps-legal a:hover { color: #4b5563; }
 
 /* Brand in the status cards and dashboard */
 .vf-brand .ps-ic { width: 30px; height: 30px; }
@@ -109,6 +93,7 @@
   .ps-laptop { display: none; }
   .ps-lockup img { width: 64px; height: 64px; }
   .ps-lockup-text b { font-size: 32px; }
+  .ps-card { width: 100%; }
 }
 @media (max-width: 560px) {
   .ps-tb-menu { display: none; }
