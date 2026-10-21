@@ -169,6 +169,7 @@
       <button data-go="wrong">Wrong code</button>
       <button data-go="expired">Code expired</button>
       <button data-go="mail">Email app</button>
+      <button data-go="verify">Verifying</button>
       <button data-go="success">Signed in</button>
       <button data-go="home">Home</button>
     </div>
@@ -406,6 +407,21 @@
           <button class="btn btn-primary btn-lg btn-block" id="m-mail-copy" type="button">Copy Code</button>
           <span class="mt-notice"><svg class="i"><use href="#i-clock"/></svg> This single-use code expires in 15 minutes.</span>
           <p class="mt-warn"><svg class="i"><use href="#i-shield"/></svg> Never share this code. If you did not request it, you can safely ignore this email.</p>
+        </div>
+      </section>
+
+      <!-- Verify -->
+      <section class="m-view m-center" id="v-verify" data-label="Verifying code">
+        <header class="m-head"><img class="m-logo" src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="185" height="24"></header>
+        <div class="m-body-mid">
+          <div class="ring-ill" aria-hidden="true"><span class="arc"></span><span class="ring-core"><svg class="i"><use href="#i-lock"/></svg></span></div>
+          <h1 class="m-title" tabindex="-1">Verifying your code</h1>
+          <p class="m-text">Please wait a moment while we check your code.</p>
+          <ol class="steps" id="mv-steps">
+            <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg><svg class="i ic-x"><use href="#i-x"/></svg></span>Checking your code</li>
+            <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg><svg class="i ic-x"><use href="#i-x"/></svg></span>Signing you in securely</li>
+            <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg><svg class="i ic-x"><use href="#i-x"/></svg></span>Setting up your account</li>
+          </ol>
         </div>
       </section>
 

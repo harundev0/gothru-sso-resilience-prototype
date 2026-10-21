@@ -1,6 +1,6 @@
 /* Panorra mobile app prototype — vanilla JS, simulation only (no network calls).
    Flow: Start -> Pre-flight -> (SSO up) Redirect -> Home
-                             -> (SSO down) Local login -> Google | Email code -> Enter code -> Signed in */
+                             -> (SSO down) Local login -> Google | Email code -> Enter code -> Verify -> Signed in */
 (() => {
   'use strict';
 
@@ -256,23 +256,32 @@
   }
 
   /* ---------- Verify (POST /api/auth/email-code/verify): single-use, 15 min, 5 tries ---------- */
+  function checkCode(code) {
+    if (state.link === 'expired') return ['This code has expired. Request a new code.', true];
+    if (state.linkUsed || state.tries >= 5) return ['This code is no longer valid. Request a new code.', true];
+    if (code === state.code) return null;
+    state.tries++;
+    const left = 5 - state.tries;
+    return left ? [`Incorrect code. ${left} ${left === 1 ? 'attempt' : 'attempts'} left.`] : ['Too many incorrect attempts. Request a new code.', true];
+  }
   async function verifyCode(e) {
     e.preventDefault();
-    const btn = $('#m-verify');
     const code = otp.get();
-    if (code.length < 6 || btn.dataset.html) return;
-    setBtnLoading(btn, 'Verifying...');
+    if (code.length < 6 || current !== 'sent') return;
+    const items = $$('#mv-steps li');
+    items.forEach(li => { li.className = ''; });
+    go('verify');
+    items[0].className = 'active';
     await wait(800);
-    resetBtn(btn);
-    if (state.link === 'expired') return codeError('This code has expired. Request a new code.', true);
-    if (state.linkUsed || state.tries >= 5) return codeError('This code is no longer valid. Request a new code.', true);
-    if (code !== state.code) {
-      state.tries++;
-      return state.tries >= 5
-        ? codeError('Too many incorrect attempts. Request a new code.', true)
-        : codeError(`Incorrect code. ${5 - state.tries} ${5 - state.tries === 1 ? 'attempt' : 'attempts'} left.`);
-    }
+    const err = checkCode(code);
+    if (err) { items[0].className = 'fail'; await wait(600); goBack(); return codeError(...err); } // back to the boxes with the reason
     state.linkUsed = true; // code burned: single use
+    items[0].className = 'done'; items[1].className = 'active';
+    await wait(800);
+    items[1].className = 'done'; items[2].className = 'active';
+    await wait(700);
+    items[2].className = 'done';
+    await wait(300);
     go('success');
   }
 
@@ -326,11 +335,12 @@
     wrong: () => { demoEmail(); state.linkUsed = false; go('fallback'); showSent(false); otp.set(wrongCode()); },
     expired: () => { demoEmail(); go('fallback'); showSent(false); codeError('This code has expired. Request a new code.', true); },
     mail: () => { demoEmail(); openMail(); },
+    verify: () => { demoEmail(); state.linkUsed = false; go('fallback'); showSent(false); otp.set(state.code); },
     success: () => go('success'),
     home: () => openHome('Emergency session · Email code', ''),
   };
   // Back-stack each jumped-to screen would have had in the real flow
-  const HISTORY = { email: ['start', 'fallback'], sent: ['start', 'fallback', 'email'], resent: ['start', 'fallback', 'email'], wrong: ['start', 'fallback', 'email'], expired: ['start', 'fallback', 'email'], mail: ['start', 'fallback', 'email', 'sent'] };
+  const HISTORY = { email: ['start', 'fallback'], sent: ['start', 'fallback', 'email'], resent: ['start', 'fallback', 'email'], wrong: ['start', 'fallback', 'email', 'sent'], verify: ['start', 'fallback', 'email', 'sent'], expired: ['start', 'fallback', 'email'], mail: ['start', 'fallback', 'email', 'sent'] };
   function jump(key) {
     clearAll();
     $('#m-toast').classList.remove('is-on');
