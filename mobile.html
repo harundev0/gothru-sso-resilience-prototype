@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Panorra App — SSO Resilience</title>
-<meta name="description" content="Panorra mobile app: GoThru SSO pre-flight check, Google and Magic Link fallback, link verification. Clickable prototype.">
+<meta name="description" content="Panorra mobile app: GoThru SSO pre-flight check, Google and email code (OTP) fallback. Clickable prototype.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
@@ -143,10 +143,9 @@
       </div>
     </div>
     <div class="pp-group">
-      <span class="pp-label">Magic link</span>
-      <div class="seg" role="radiogroup" aria-label="Magic link">
+      <span class="pp-label">Email code</span>
+      <div class="seg" role="radiogroup" aria-label="Email code">
         <label><input type="radio" name="m-link" value="valid" checked><span>Valid</span></label>
-        <label><input type="radio" name="m-link" value="used"><span>Used</span></label>
         <label><input type="radio" name="m-link" value="expired"><span>Expired</span></label>
       </div>
     </div>
@@ -165,12 +164,12 @@
       <button data-go="redirect">Redirect</button>
       <button data-go="fallback">Local login</button>
       <button data-go="email">Enter email</button>
-      <button data-go="sent">Email sent</button>
-      <button data-go="resent">Link resent</button>
+      <button data-go="sent">Enter code</button>
+      <button data-go="resent">Code resent</button>
+      <button data-go="wrong">Wrong code</button>
+      <button data-go="expired">Code expired</button>
       <button data-go="mail">Email app</button>
-      <button data-go="verify">Verifying</button>
       <button data-go="success">Signed in</button>
-      <button data-go="invalid">Link invalid</button>
       <button data-go="home">Home</button>
     </div>
     <p class="pp-hint">Web version: <a href="index.html">index.html</a></p>
@@ -245,7 +244,7 @@
       <section class="m-view m-center" id="v-fallback" data-label="Local login (fallback)">
         <header class="m-head"><img class="m-logo" src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="185" height="24"></header>
         <div class="m-land" aria-hidden="true">
-          <!-- Detour: the SSO road is closed for maintenance, the signpost points to Google and Magic Link -->
+          <!-- Detour: the SSO road is closed for maintenance, the signpost points to Google and an email code -->
           <svg class="m-detour" viewBox="0 0 340 340" preserveAspectRatio="xMidYMax slice">
             <defs>
               <linearGradient id="dt-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ede9fe"/><stop offset=".55" stop-color="#f5f3ff"/><stop offset="1" stop-color="#fce7f3"/></linearGradient>
@@ -288,7 +287,7 @@
         <p class="m-text">Sign in to continue and start exploring amazing places.</p>
         <div class="m-stack">
           <button class="btn btn-google" id="m-google" type="button"><svg class="g-ic"><use href="#lg-google"/></svg> Continue with Google</button>
-          <button class="btn btn-secondary btn-block" id="m-magic" type="button"><svg class="i m-mail-ic"><use href="#i-mail"/></svg> Continue with Magic Link</button>
+          <button class="btn btn-secondary btn-block" id="m-magic" type="button"><svg class="i m-mail-ic"><use href="#i-mail"/></svg> Continue with Email Code</button>
         </div>
         <p class="m-legal m-foot">By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
       </section>
@@ -304,9 +303,8 @@
               <rect x="30" y="54" width="100" height="56" rx="10" fill="#c7d2fe"/>
               <g class="m-ml-letter">
                 <rect x="42" y="26" width="76" height="60" rx="9" fill="#fff" stroke="#e0e7ff"/>
-                <rect x="51" y="36" width="58" height="16" rx="8" fill="#2563eb"/>
-                <path d="M59 44h6m-2-3 3 3-3 3" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                <rect x="70" y="42" width="32" height="4" rx="2" fill="#fff" opacity=".85"/>
+                <g fill="#2563eb"><rect x="51" y="35" width="16" height="18" rx="4"/><rect x="72" y="35" width="16" height="18" rx="4"/><rect x="93" y="35" width="16" height="18" rx="4"/></g>
+                <g fill="#fff"><circle cx="59" cy="44" r="2.2"/><circle cx="80" cy="44" r="2.2"/><circle cx="101" cy="44" r="2.2"/></g>
                 <rect x="51" y="60" width="44" height="4" rx="2" fill="#e5e7eb"/>
                 <rect x="51" y="69" width="30" height="4" rx="2" fill="#e5e7eb"/>
               </g>
@@ -318,24 +316,24 @@
               <circle class="m-ml-spark s4" cx="14" cy="78" r="3" fill="#60a5fa"/>
             </svg>
           </span>
-          <h1 class="m-title" tabindex="-1">Sign in with Magic Link</h1>
-          <p class="m-text">Enter your email address and we'll send you a secure sign-in link.</p>
+          <h1 class="m-title" tabindex="-1">Sign in with Email Code</h1>
+          <p class="m-text">Enter your email address and we'll send you a 6-digit code to sign in.</p>
         </div>
         <form id="m-form" novalidate>
           <label class="m-label" for="m-email">Email address</label>
           <div class="input-wrap"><svg class="i"><use href="#i-mail"/></svg><input class="input" type="email" id="m-email" placeholder="you@example.com" autocomplete="email" inputmode="email" required></div>
           <div class="form-msg" id="m-email-msg" role="status"></div>
-          <button class="btn btn-primary btn-block btn-lg" id="m-send" type="submit" disabled>Send Magic Link</button>
+          <button class="btn btn-primary btn-block btn-lg" id="m-send" type="submit" disabled>Send Code</button>
         </form>
-        <p class="fb-note m-foot"><svg class="i"><use href="#i-shield"/></svg> Passwordless · single-use link · expires in 15 minutes</p>
+        <p class="fb-note m-foot"><svg class="i"><use href="#i-shield"/></svg> Passwordless · 6-digit code · expires in 15 minutes</p>
       </section>
 
-      <!-- 5/6 · Email sent / resent -->
-      <section class="m-view m-center" id="v-sent" data-label="Email sent">
+      <!-- 5/6 · Enter the emailed code (sent / resent) -->
+      <section class="m-view m-center" id="v-sent" data-label="Enter code">
         <header class="m-head"><button class="m-back" data-back type="button" aria-label="Back"><svg class="i"><use href="#i-chev-left"/></svg></button><img class="m-logo" src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="185" height="24"></header>
         <div class="m-body-mid">
           <div class="mail-ill" aria-hidden="true">
-          <!-- Magic-link envelope: lands, flap opens, letter rises, badge pops, sparkles, then floats -->
+          <!-- Email-code envelope: lands, flap opens, letter rises, badge pops, sparkles, then floats -->
           <svg viewBox="0 0 180 156">
             <defs>
               <linearGradient id="ml-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ede9fe"/><stop offset="1" stop-color="#dbeafe"/></linearGradient>
@@ -353,8 +351,8 @@
                 <g clip-path="url(#ml-clip)">
                   <g class="ml-letter">
                     <rect x="52" y="40" width="76" height="70" rx="8" fill="#fff" stroke="#e0e7ff" stroke-width="1.5"/>
-                    <circle cx="90" cy="60" r="11" fill="#eef2ff"/>
-                    <path d="M87 62.5a3.5 3.5 0 0 0 5 .3l2.3-2.3a3.5 3.5 0 0 0-5-5l-1 1M93 57.5a3.5 3.5 0 0 0-5-.3l-2.3 2.3a3.5 3.5 0 0 0 5 5l1-1" fill="none" stroke="#4f46e5" stroke-width="1.8" stroke-linecap="round"/>
+                    <rect x="62" y="51" width="56" height="18" rx="9" fill="#eef2ff"/>
+                    <g fill="#4f46e5"><circle cx="75" cy="60" r="2.6"/><circle cx="85" cy="60" r="2.6"/><circle cx="95" cy="60" r="2.6"/><circle cx="105" cy="60" r="2.6"/></g>
                     <rect x="66" y="78" width="48" height="5" rx="2.5" fill="#e0e7ff"/>
                     <rect x="72" y="88" width="36" height="5" rx="2.5" fill="#eef2ff"/>
                   </g>
@@ -372,13 +370,23 @@
           </svg>
         </div>
           <h1 class="m-title" id="ms-title" tabindex="-1">Check your email</h1>
-          <p class="m-text"><span id="ms-lead">We've sent a sign-in link to</span><br><b class="m-email" id="ms-email">you@example.com</b></p>
-          <p class="m-text" id="ms-sub">Click the link in your email to continue to Panorra. The link will expire in 15 minutes.</p>
+          <p class="m-text"><span id="ms-lead">Enter the 6-digit code we sent to</span><br><b class="m-email" id="ms-email">you@example.com</b></p>
+          <form class="otp-form" id="m-otp-form" novalidate>
+            <div class="otp" id="m-otp" role="group" aria-label="6-digit code">
+              <input class="otp-d" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 1" autocomplete="one-time-code">
+              <input class="otp-d" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 2" autocomplete="off">
+              <input class="otp-d" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 3" autocomplete="off">
+              <input class="otp-d" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 4" autocomplete="off">
+              <input class="otp-d" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 5" autocomplete="off">
+              <input class="otp-d" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 6" autocomplete="off">
+            </div>
+            <div class="form-msg" id="m-otp-msg" role="status"></div>
+            <button class="btn btn-primary btn-block btn-lg" id="m-verify" type="submit" disabled>Verify</button>
+          </form>
         </div>
         <div class="m-stack m-foot">
-          <button class="btn btn-primary btn-block btn-lg" id="m-open-mail" type="button">Open Email App</button>
-          <div class="or"><span>or</span></div>
-          <button class="btn btn-secondary btn-block" id="m-resend" type="button" disabled>Resend Link (60s)</button>
+          <button class="btn btn-secondary btn-block" id="m-open-mail" type="button">Open Email App</button>
+          <button class="btn btn-secondary btn-block" id="m-resend" type="button" disabled>Resend Code (60s)</button>
           <div class="banner banner-warn" id="m-resend-msg" hidden></div>
           <button class="link-btn" id="m-diff" type="button"><svg class="i"><use href="#i-chev-left"/></svg> Use a different email</button>
         </div>
@@ -387,31 +395,17 @@
       <!-- Email app -->
       <section class="m-view m-mail" id="v-mail" data-label="Email app">
         <header class="m-head"><button class="m-back" data-back type="button" aria-label="Back to Panorra"><svg class="i"><use href="#i-chev-left"/></svg></button><span class="m-mailbox">Inbox</span></header>
-        <h1 class="m-subject">⚡ Emergency Login Link - GoThru SSO Outage Fallback</h1>
+        <h1 class="m-subject">⚡ Emergency Login Code - GoThru SSO Outage Fallback</h1>
         <div class="mail-from"><span class="avatar sm av-gt">G</span><div><b>GoThru Security</b> <small>&lt;no-reply@id.gothru.org&gt;</small><br><small>to <span id="mm-to">you@example.com</span> · just now</small></div></div>
         <div class="mt-card m-mt">
           <div class="mt-brand"><svg class="mt-gt"><use href="#lg-gothru"/></svg><span class="mt-x">×</span><img class="mt-pn" src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="154" height="20"></div>
           <span class="mt-icon"><svg class="i"><use href="#i-zap"/></svg></span>
-          <h2>Your emergency sign-in link</h2>
-          <p>Tap below to sign in to your account. This link expires in 15 minutes:</p>
-          <button class="btn btn-primary btn-lg btn-block" id="m-mail-signin" type="button">Sign In to My Account</button>
-          <span class="mt-notice"><svg class="i"><use href="#i-clock"/></svg> This single-use link expires in 15 minutes.</span>
-          <p class="mt-warn"><svg class="i"><use href="#i-shield"/></svg> If you did not request this login link, you can safely ignore this email.</p>
-        </div>
-      </section>
-
-      <!-- Verify -->
-      <section class="m-view m-center" id="v-verify" data-label="Verifying link">
-        <header class="m-head"><img class="m-logo" src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="185" height="24"></header>
-        <div class="m-body-mid">
-          <div class="ring-ill" aria-hidden="true"><span class="arc"></span><span class="ring-core"><svg class="i"><use href="#i-link"/></svg></span></div>
-          <h1 class="m-title" tabindex="-1">Verifying your sign-in link</h1>
-          <p class="m-text">Please wait a moment while we validate your link.</p>
-          <ol class="steps" id="mv-steps">
-            <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg><svg class="i ic-x"><use href="#i-x"/></svg></span>Checking link validity</li>
-            <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg><svg class="i ic-x"><use href="#i-x"/></svg></span>Signing you in securely</li>
-            <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg><svg class="i ic-x"><use href="#i-x"/></svg></span>Setting up your account</li>
-          </ol>
+          <h2>Your emergency sign-in code</h2>
+          <p>Enter this code in the Panorra app to sign in:</p>
+          <b class="otp-code" id="mm-code">000000</b>
+          <button class="btn btn-primary btn-lg btn-block" id="m-mail-copy" type="button">Copy Code</button>
+          <span class="mt-notice"><svg class="i"><use href="#i-clock"/></svg> This single-use code expires in 15 minutes.</span>
+          <p class="mt-warn"><svg class="i"><use href="#i-shield"/></svg> Never share this code. If you did not request it, you can safely ignore this email.</p>
         </div>
       </section>
 
@@ -467,46 +461,6 @@
           <p class="m-text">You've successfully signed in.<br>Let's start exploring amazing places!</p>
         </div>
         <button class="btn btn-primary btn-block btn-lg m-foot" id="m-continue" type="button">Continue</button>
-      </section>
-
-      <!-- Link invalid -->
-      <section class="m-view m-center" id="v-invalid" data-label="Link invalid">
-        <header class="m-head"><img class="m-logo" src="assets/logos/panorra-wordmark.png" alt="Panorra 360" width="185" height="24"></header>
-        <div class="m-body-mid">
-          <div class="err-ill" aria-hidden="true">
-        <!-- Broken link: link glyph draws in, shakes, snaps into two halves with a crack, X badge pops, halves sway -->
-        <svg viewBox="0 0 180 156">
-          <defs>
-            <linearGradient id="er-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe4e6"/><stop offset="1" stop-color="#fdf2f8"/></linearGradient>
-            <linearGradient id="er-ink" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f46e5"/><stop offset="1" stop-color="#7c3aed"/></linearGradient>
-          </defs>
-          <circle class="er-disc" cx="90" cy="76" r="64" fill="url(#er-bg)"/>
-          <g class="er-orbit"><circle cx="90" cy="76" r="73" fill="none" stroke="#fda4af" stroke-width="1.5" stroke-dasharray="2 7" stroke-linecap="round"/></g>
-          <circle class="er-core" cx="90" cy="76" r="44" fill="#fff"/>
-          <g class="er-glyph" fill="none" stroke="url(#er-ink)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-            <g class="er-a"><g class="er-a-in"><g transform="translate(62 48) scale(2.33)"><path pathLength="1" d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/></g></g></g>
-            <g class="er-b"><g class="er-b-in"><g transform="translate(62 48) scale(2.33)"><path pathLength="1" d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></g></g></g>
-          </g>
-          <path class="er-crack" d="M93 67 l-5 8 h6 l-5 8" fill="none" stroke="#f43f5e" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <g class="er-sparks" stroke-linecap="round" stroke-width="3">
-            <path d="M126 22 l-3 9" stroke="#f43f5e"/>
-            <path d="M140 32 l-8 5" stroke="#f43f5e"/>
-            <path d="M144 48 h-8" stroke="#fb7185"/>
-          </g>
-          <g class="er-badge"><circle cx="122" cy="108" r="15" fill="#ef4444" stroke="#fff" stroke-width="4"/><path d="M116.5 102.5l11 11M127.5 102.5l-11 11" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/></g>
-          <path class="er-star s1" d="M30 46l2.2 6 6 2.2-6 2.2-2.2 6-2.2-6-6-2.2 6-2.2z" fill="#fb7185"/>
-          <circle class="er-star s2" cx="40" cy="112" r="3" fill="#a5b4fc"/>
-        </svg>
-      </div>
-          <h1 class="m-title" tabindex="-1">This link is no longer valid</h1>
-          <p class="m-text">The sign-in link may have expired or has already been used.</p>
-          <div class="banner banner-err"><svg class="i"><use href="#i-alert"/></svg><span id="mi-detail">This magic link has already been used.</span></div>
-        </div>
-        <div class="m-stack m-foot">
-          <button class="btn btn-primary btn-block btn-lg" id="m-new-link" type="button">Request a new link</button>
-          <div class="or"><span>or</span></div>
-          <button class="btn btn-secondary btn-block" id="m-other-email" type="button">Use a different email</button>
-        </div>
       </section>
 
       <!-- Google -->

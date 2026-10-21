@@ -1,6 +1,6 @@
 /* Panorra mobile app prototype — vanilla JS, simulation only (no network calls).
    Flow: Start -> Pre-flight -> (SSO up) Redirect -> Home
-                             -> (SSO down) Local login -> Google | Magic Link -> Email -> Verify -> Signed in / Invalid */
+                             -> (SSO down) Local login -> Google | Email code -> Enter code -> Signed in */
 (() => {
   'use strict';
 
@@ -9,7 +9,7 @@
   const BRAND = document.body.dataset.brand || 'Panorra'; // street-editor.html reuses this flow
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-  const state = { sso: 'down', link: 'valid', speed: 10, email: '', sends: {}, linkUsed: false, resendLeft: 0, history: [], session: '' };
+  const state = { sso: 'down', link: 'valid', speed: 10, email: '', sends: {}, code: '', tries: 0, linkUsed: false, resendLeft: 0, history: [], session: '' };
 
   /* ---------- cancellable timers ---------- */
   const timers = new Set();
@@ -77,7 +77,7 @@
     }
     items[3].className = 'active';
     const [ok] = await Promise.all([result, wait(700)]);
-    if (!ok) return go('fallback'); // failure is not shown: straight to Google / Magic Link
+    if (!ok) return go('fallback'); // failure is not shown: straight to Google / email code
     items[3].className = 'done';
     setPreflight('ok');
     await wait(1000);
@@ -132,7 +132,7 @@
     openHome('', 'Signed in with Apple.');
   }
 
-  /* ---------- Magic link ---------- */
+  /* ---------- Email code ---------- */
   function openEmail(prefill = state.email) {
     $('#m-email').value = prefill || '';
     setEmailMsg('', '');
@@ -147,11 +147,14 @@
   }
   function syncSend() { $('#m-send').disabled = !EMAIL_RE.test($('#m-email').value.trim()); }
 
-  // POST /api/auth/magic-link/request: 200 always (anti-enumeration), 429 after 3 requests / 15 min per email
+  // POST /api/auth/email-code/request: 200 always (anti-enumeration), 429 after 3 requests / 15 min per email
+  const newCode = () => String(Math.floor(Math.random() * 1e6)).padStart(6, '0');
   async function requestLink(email) {
     await wait(900);
     state.sends[email] = (state.sends[email] || 0) + 1;
-    return state.sends[email] > 3 ? 429 : 200;
+    if (state.sends[email] > 3) return 429;
+    state.code = newCode(); state.tries = 0; // a new code replaces the old one
+    return 200;
   }
   function setBtnLoading(btn, text) {
     if (!btn.dataset.html) btn.dataset.html = btn.innerHTML;
@@ -175,13 +178,12 @@
   }
 
   function showSent(resent) {
-    $('#ms-title').textContent = resent ? 'A new link has been sent' : 'Check your email';
-    $('#ms-lead').textContent = resent ? "We've sent another sign-in link to" : "We've sent a sign-in link to";
+    $('#ms-title').textContent = resent ? 'A new code has been sent' : 'Check your email';
+    $('#ms-lead').textContent = resent ? "We've sent a new 6-digit code to" : 'Enter the 6-digit code we sent to';
     $('#ms-email').textContent = state.email || 'you@example.com';
-    $('#ms-sub').textContent = resent
-      ? "If you don't see the email, please check your spam folder."
-      : `Click the link in your email to continue to ${BRAND}. The link will expire in 15 minutes.`;
     $('#m-resend-msg').hidden = true;
+    otp.set('');
+    setCodeMsg('');
     if (current === 'sent') { const ill = $('#v-sent .mail-ill'); ill.replaceWith(ill.cloneNode(true)); }
     else go('sent');
     countdown(60);
@@ -189,7 +191,7 @@
   function renderResend() {
     const b = $('#m-resend');
     b.disabled = state.resendLeft > 0;
-    b.textContent = state.resendLeft > 0 ? `Resend Link (${state.resendLeft}s)` : 'Resend Link';
+    b.textContent = state.resendLeft > 0 ? `Resend Code (${state.resendLeft}s)` : 'Resend Code';
   }
   let cdTimer = 0;
   function countdown(s) {
@@ -212,27 +214,79 @@
     showSent(true);
   }
 
-  /* ---------- Verify (GET /auth/magic-link/verify) ---------- */
-  async function runVerify() {
-    const items = $$('#mv-steps li');
-    items.forEach(li => { li.className = ''; });
-    go('verify');
-    items[0].className = 'active';
+  /* ---------- Code boxes: type, backspace, arrows, paste or one-time-code autofill ---------- */
+  function codeBoxes(root, onChange) {
+    const boxes = $$('input', root);
+    const get = () => boxes.map(b => b.value).join('');
+    const fill = (from, digits) => {
+      [...digits].slice(0, boxes.length - from).forEach((d, i) => { boxes[from + i].value = d; });
+      boxes[Math.min(from + digits.length, boxes.length - 1)].focus();
+    };
+    const changed = () => { root.removeAttribute('aria-invalid'); onChange(get()); };
+    boxes.forEach((b, i) => {
+      b.addEventListener('focus', () => b.select());
+      b.addEventListener('input', () => { const d = b.value.replace(/\D/g, ''); b.value = ''; if (d) fill(i, d); changed(); });
+      b.addEventListener('paste', e => { e.preventDefault(); fill(i, e.clipboardData.getData('text').replace(/\D/g, '')); changed(); });
+      b.addEventListener('keydown', e => {
+        if (e.key === 'Backspace' && !b.value && i) { e.preventDefault(); boxes[i - 1].value = ''; boxes[i - 1].focus(); changed(); }
+        else if (e.key === 'ArrowLeft' && i) boxes[i - 1].focus();
+        else if (e.key === 'ArrowRight' && boxes[i + 1]) boxes[i + 1].focus();
+      });
+    });
+    return { get, set(code) { boxes.forEach((b, i) => { b.value = code[i] || ''; }); onChange(get()); }, focus: () => boxes[0].focus() };
+  }
+  const otp = codeBoxes($('#m-otp'), code => {
+    $('#m-verify').disabled = code.length < 6 || !!$('#m-verify').dataset.html;
+    if (code.length === 6 && current === 'sent') $('#m-otp-form').requestSubmit();
+  });
+  function setCodeMsg(text) {
+    const m = $('#m-otp-msg');
+    m.className = 'form-msg' + (text ? ' is-err' : '');
+    m.textContent = text;
+  }
+  // Wrong / expired / burned code: clear the boxes and let the user try again; a dead code unlocks Resend at once
+  function codeError(text, dead) {
+    setCodeMsg(text);
+    const root = $('#m-otp');
+    root.setAttribute('aria-invalid', 'true');
+    root.classList.remove('shake'); void root.offsetWidth; root.classList.add('shake');
+    otp.set('');
+    otp.focus();
+    if (dead) { stop(cdTimer); state.resendLeft = 0; renderResend(); }
+  }
+
+  /* ---------- Verify (POST /api/auth/email-code/verify): single-use, 15 min, 5 tries ---------- */
+  async function verifyCode(e) {
+    e.preventDefault();
+    const btn = $('#m-verify');
+    const code = otp.get();
+    if (code.length < 6 || btn.dataset.html) return;
+    setBtnLoading(btn, 'Verifying...');
     await wait(800);
-    if (state.link === 'expired') { items[0].className = 'fail'; await wait(500); return showInvalid('expired'); }
-    items[0].className = 'done'; items[1].className = 'active';
-    await wait(800);
-    if (state.link === 'used' || state.linkUsed) { items[1].className = 'fail'; await wait(500); return showInvalid('used'); }
-    state.linkUsed = true; // nonce burned: a second tap is a replay
-    items[1].className = 'done'; items[2].className = 'active';
-    await wait(700);
-    items[2].className = 'done';
-    await wait(300);
+    resetBtn(btn);
+    if (state.link === 'expired') return codeError('This code has expired. Request a new code.', true);
+    if (state.linkUsed || state.tries >= 5) return codeError('This code is no longer valid. Request a new code.', true);
+    if (code !== state.code) {
+      state.tries++;
+      return state.tries >= 5
+        ? codeError('Too many incorrect attempts. Request a new code.', true)
+        : codeError(`Incorrect code. ${5 - state.tries} ${5 - state.tries === 1 ? 'attempt' : 'attempts'} left.`);
+    }
+    state.linkUsed = true; // code burned: single use
     go('success');
   }
-  function showInvalid(reason) {
-    $('#mi-detail').textContent = reason === 'expired' ? 'Magic link has expired.' : 'This magic link has already been used.';
-    go('invalid');
+
+  function openMail() {
+    $('#mm-to').textContent = state.email || 'you@example.com';
+    $('#mm-code').textContent = state.code;
+    go('mail');
+  }
+  // Copy only: the user goes back to the app and enters the code themselves
+  function copyCode(e) {
+    const btn = e.currentTarget;
+    navigator.clipboard?.writeText(state.code).catch(() => {});
+    btn.textContent = 'Copied!';
+    later(() => { btn.textContent = 'Copy Code'; }, 2000);
   }
 
   /* ---------- Home ---------- */
@@ -258,7 +312,8 @@
   }
 
   /* ---------- Prototype jumps ---------- */
-  const demoEmail = () => { if (!state.email) state.email = 'eko@gothru.co'; };
+  const demoEmail = () => { if (!state.email) state.email = 'eko@gothru.co'; if (!state.code) state.code = newCode(); };
+  const wrongCode = () => state.code.replace(/\d/g, d => (+d + 1) % 10);
   const JUMPS = {
     start: () => go('start'),
     preflight: () => runPreflight(),
@@ -268,17 +323,18 @@
     email: () => openEmail(),
     sent: () => { demoEmail(); go('fallback'); showSent(false); },
     resent: () => { demoEmail(); go('fallback'); showSent(true); },
-    mail: () => { demoEmail(); $('#mm-to').textContent = state.email; go('mail'); },
-    verify: () => { demoEmail(); state.linkUsed = false; runVerify(); },
+    wrong: () => { demoEmail(); state.linkUsed = false; go('fallback'); showSent(false); otp.set(wrongCode()); },
+    expired: () => { demoEmail(); go('fallback'); showSent(false); codeError('This code has expired. Request a new code.', true); },
+    mail: () => { demoEmail(); openMail(); },
     success: () => go('success'),
-    invalid: () => showInvalid(state.link === 'expired' ? 'expired' : 'used'),
-    home: () => openHome('Emergency session · Magic Link', ''),
+    home: () => openHome('Emergency session · Email code', ''),
   };
   // Back-stack each jumped-to screen would have had in the real flow
-  const HISTORY = { email: ['start', 'fallback'], sent: ['start', 'fallback', 'email'], resent: ['start', 'fallback', 'email'], mail: ['start', 'fallback', 'email', 'sent'] };
+  const HISTORY = { email: ['start', 'fallback'], sent: ['start', 'fallback', 'email'], resent: ['start', 'fallback', 'email'], wrong: ['start', 'fallback', 'email'], expired: ['start', 'fallback', 'email'], mail: ['start', 'fallback', 'email', 'sent'] };
   function jump(key) {
     clearAll();
     $('#m-toast').classList.remove('is-on');
+    resetBtn($('#m-verify'));
     JUMPS[key]();
     state.history = HISTORY[key] || [];
     togglePanel(false);
@@ -302,13 +358,12 @@
   $('#m-magic').addEventListener('click', () => openEmail());
   $('#m-email').addEventListener('input', () => { setEmailMsg('', ''); syncSend(); });
   $('#m-form').addEventListener('submit', sendLink);
-  $('#m-open-mail').addEventListener('click', () => { $('#mm-to').textContent = state.email || 'you@example.com'; go('mail'); });
+  $('#m-otp-form').addEventListener('submit', verifyCode);
+  $('#m-open-mail').addEventListener('click', openMail);
   $('#m-resend').addEventListener('click', resend);
   $('#m-diff').addEventListener('click', () => openEmail(''));
-  $('#m-mail-signin').addEventListener('click', runVerify);
-  $('#m-continue').addEventListener('click', () => openHome('Emergency session · Magic Link', 'Logged in via emergency email link. Work normally.'));
-  $('#m-new-link').addEventListener('click', () => openEmail());
-  $('#m-other-email').addEventListener('click', () => openEmail(''));
+  $('#m-mail-copy').addEventListener('click', copyCode);
+  $('#m-continue').addEventListener('click', () => openHome('Emergency session · Email code', 'Signed in with an emergency email code. Work normally.'));
   $$('[data-back]').forEach(b => b.addEventListener('click', goBack));
   $$('[data-go]').forEach(b => b.addEventListener('click', () => jump(b.dataset.go)));
   $$('input[name="m-sso"]').forEach(r => r.addEventListener('change', () => { state.sso = r.value; }));

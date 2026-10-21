@@ -289,6 +289,21 @@ p { text-wrap: pretty; }
 .mview[data-v="sent"] #resend-msg { margin: var(--s4) 0 0; }
 .mview[data-v="sent"] .link-btn { margin-top: var(--s4); }
 
+/* Email code (OTP): desktop + mobile apps only, index.html keeps the magic link */
+.otp { display: flex; gap: 8px; justify-content: center; }
+.otp input { flex: 1; min-width: 0; max-width: 52px; height: 56px; padding: 0; border: 1px solid #cbd5e1; border-radius: 12px; background: #fff; text-align: center; font: 700 22px/1 var(--font); color: var(--ink); transition: border-color .15s, box-shadow .15s; }
+.otp input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 4px rgba(37, 99, 235, .12); }
+.otp[aria-invalid="true"] input { border-color: var(--red); }
+.otp.shake { animation: shake .4s; }
+.otp-form { margin: 0 0 var(--s4); }
+.otp-form .form-msg { text-align: center; }
+.otp-form .btn { margin-top: var(--s4); }
+.otp-code { display: block; margin: 0 auto var(--s5); padding: 14px 12px 14px calc(12px + .3em); max-width: 300px; border: 1px dashed #cbd5e1; border-radius: 12px; background: #f8fafc; font: 800 32px/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .3em; color: var(--ink); }
+.otp-code + .btn { display: flex; min-width: 180px; margin: 0 auto; } /* own line + fixed width: "Copied!" must not pull the notice up beside it */
+.otp-view .mail-ill { width: 120px; height: 104px; }
+.otp-view .sent-sub { margin-bottom: var(--s4); }
+.otp-view #btn-resend { margin-top: var(--s3); }
+
 /* Scene: panorama horizon behind new centred screens (redirect, verify) */
 .scene { position: relative; overflow: hidden; background: #f5f8ff; }
 .scene > .card { position: relative; z-index: 1; max-width: 440px; padding: var(--s7); border-color: #e6ecf8; }

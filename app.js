@@ -8,6 +8,7 @@
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const BRAND = document.body.dataset.brand || 'Panorra'; // photo-studio.html reuses this flow
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const OTP = !!$('#otp-form'); // desktop apps get a 6-digit email code; index.html keeps the magic link
 
   const state = {
     scenario: 'extended',   // healthy | recover | extended
@@ -17,7 +18,7 @@
     a2a: 'live',            // live | stale | empty | unavailable
     outageStart: 0,
     polling: false, checkCount: 0, pollTimer: 0,
-    email: '', sends: {}, linkUsed: false,
+    email: '', sends: {}, linkUsed: false, code: '', tries: 0,
     resendLeft: 0, resendTimer: 0,
     sess: null, sessTick: 0,
   };
@@ -229,7 +230,7 @@
     resetBtn(btn);
     if (ok) return recovered();
     const msg = state.checkCount >= 3
-      ? "Still unavailable. Use Google or Magic Link below, or we'll keep checking every 10s."
+      ? `Still unavailable. Use Google or ${OTP ? 'an email code' : 'Magic Link'} below, or we'll keep checking every 10s.`
       : "Still unavailable. We'll keep checking automatically.";
     setMeta(msg);
     setNote('warn', msg);
@@ -256,7 +257,8 @@
     m.className = 'form-msg is-' + tone; m.textContent = text;
   }
 
-  // POST /api/auth/magic-link/request — max 3 per 15 min per email, generic 200
+  const newCode = () => String(Math.floor(Math.random() * 1e6)).padStart(6, '0');
+  // POST /api/auth/magic-link/request (email-code pages: /api/auth/email-code/request) — max 3 per 15 min per email, generic 200
   async function requestMagicLink(email) {
     await wait(900);
     if (state.netError) return 'network';
@@ -265,6 +267,7 @@
     if (n >= 3) return 429;
     state.sends[k] = n + 1;
     state.linkUsed = false;
+    state.code = newCode(); state.tries = 0; // email-code pages: a new code replaces the old one
     return 'ok';
   }
 
@@ -288,17 +291,24 @@
     else setMagicMsg('err', 'Network error. Please try again or use Google login.');
   }
 
+  const SENT_COPY = OTP ? [
+    ['Check your email', 'Enter the 6-digit code we sent to', 'The code expires in 15 minutes.'],
+    ['A new code has been sent', "We've sent a new 6-digit code to", "If you don't see the email, please check your spam folder."],
+  ] : [
+    ['Check your email', "We've sent a sign-in link to", `Click the link in your email to continue to ${BRAND}. The link will expire in 15 minutes.`],
+    ['A new link has been sent', "We've sent another sign-in link to", "If you don't see the email, please check your spam folder."],
+  ];
   function showSent(resent) {
     stopPolling();
     openOverlay('maint');
     setMView('sent');
-    $('#sent-title').textContent = resent ? 'A new link has been sent' : 'Check your email';
-    $('#sent-lead').textContent = resent ? "We've sent another sign-in link to" : "We've sent a sign-in link to";
+    const [title, lead, sub] = SENT_COPY[resent ? 1 : 0];
+    $('#sent-title').textContent = title;
+    $('#sent-lead').textContent = lead;
     $('#sent-email').textContent = state.email || 'you@example.com';
-    $('#sent-sub').textContent = resent
-      ? "If you don't see the email, please check your spam folder."
-      : `Click the link in your email to continue to ${BRAND}. The link will expire in 15 minutes.`;
+    $('#sent-sub').textContent = sub;
     $('#resend-msg').hidden = true;
+    if (OTP) { otp.set(''); setCodeMsg(''); }
     const ill = $('.mail-ill', modal);
     ill.replaceWith(ill.cloneNode(true)); // replay entrance animation
     startResendCountdown(60);
@@ -307,7 +317,8 @@
   function renderResend() {
     const btn = $('#btn-resend');
     btn.disabled = state.resendLeft > 0;
-    btn.textContent = state.resendLeft > 0 ? `Resend Link (${state.resendLeft}s)` : 'Resend Link';
+    const label = OTP ? 'Resend Code' : 'Resend Link';
+    btn.textContent = state.resendLeft > 0 ? `${label} (${state.resendLeft}s)` : label;
   }
   function startResendCountdown(s) {
     stop(state.resendTimer);
@@ -349,7 +360,79 @@
      ========================================================= */
   function goEmail() {
     $('#mail-to').textContent = state.email || 'you@example.com';
+    if (OTP) $('#mail-code').textContent = state.code;
     show('scr-email');
+  }
+
+  /* =========================================================
+     Email code (desktop apps): 6 boxes in the modal, POST /api/auth/email-code/verify
+     ========================================================= */
+  // Type, backspace, arrows, paste or one-time-code autofill
+  function codeBoxes(root, onChange) {
+    const boxes = $$('input', root);
+    const get = () => boxes.map(b => b.value).join('');
+    const fill = (from, digits) => {
+      [...digits].slice(0, boxes.length - from).forEach((d, i) => { boxes[from + i].value = d; });
+      boxes[Math.min(from + digits.length, boxes.length - 1)].focus();
+    };
+    const changed = () => { root.removeAttribute('aria-invalid'); onChange(get()); };
+    boxes.forEach((b, i) => {
+      b.addEventListener('focus', () => b.select());
+      b.addEventListener('input', () => { const d = b.value.replace(/\D/g, ''); b.value = ''; if (d) fill(i, d); changed(); });
+      b.addEventListener('paste', e => { e.preventDefault(); fill(i, e.clipboardData.getData('text').replace(/\D/g, '')); changed(); });
+      b.addEventListener('keydown', e => {
+        if (e.key === 'Backspace' && !b.value && i) { e.preventDefault(); boxes[i - 1].value = ''; boxes[i - 1].focus(); changed(); }
+        else if (e.key === 'ArrowLeft' && i) boxes[i - 1].focus();
+        else if (e.key === 'ArrowRight' && boxes[i + 1]) boxes[i + 1].focus();
+      });
+    });
+    return { get, set(code) { boxes.forEach((b, i) => { b.value = code[i] || ''; }); onChange(get()); }, focus: () => boxes[0].focus() };
+  }
+  const otp = OTP && codeBoxes($('#otp'), code => {
+    const btn = $('#btn-verify-otp');
+    btn.disabled = code.length < 6 || !!btn.dataset.html;
+    if (code.length === 6 && modal.dataset.mview === 'sent') $('#otp-form').requestSubmit();
+  });
+  function setCodeMsg(text) {
+    const m = $('#otp-msg');
+    m.className = 'form-msg' + (text ? ' is-err' : '');
+    m.textContent = text;
+  }
+  // Wrong / expired / burned code: clear the boxes and retry; a dead code unlocks Resend at once
+  function codeError(text, dead) {
+    setCodeMsg(text);
+    const root = $('#otp');
+    otp.set('');
+    root.setAttribute('aria-invalid', 'true');
+    restartAnim(root, 'shake');
+    otp.focus();
+    if (dead) { stop(state.resendTimer); state.resendLeft = 0; renderResend(); }
+  }
+  async function verifyCode(e) {
+    e.preventDefault();
+    const btn = $('#btn-verify-otp');
+    const code = otp.get();
+    if (code.length < 6 || btn.dataset.html) return;
+    setBtnLoading(btn, 'Verifying...');
+    await wait(800);
+    resetBtn(btn);
+    if (state.linkMode === 'expired') return codeError('This code has expired. Request a new code.', true);
+    if (state.linkUsed || state.tries >= 5) return codeError('This code is no longer valid. Request a new code.', true);
+    if (code !== state.code) {
+      state.tries++;
+      const left = 5 - state.tries;
+      return left ? codeError(`Incorrect code. ${left} ${left === 1 ? 'attempt' : 'attempts'} left.`) : codeError('Too many incorrect attempts. Request a new code.', true);
+    }
+    stopPolling();
+    closeOverlay();
+    goVerify(); // burns the code (single use), then the welcome card
+  }
+  // Copy only: the user goes back to the app and enters the code themselves
+  function copyCode(e) {
+    const btn = e.currentTarget;
+    navigator.clipboard?.writeText(state.code).catch(() => {});
+    btn.textContent = 'Copied!';
+    later(() => { btn.textContent = 'Copy Code'; }, 2000);
   }
 
   const vfCard = $('#vf-card');
@@ -501,8 +584,8 @@
     const chip = $('#db-session-chip');
     chip.hidden = !via;
     if (via === 'magic') {
-      chip.textContent = 'Emergency session · Magic Link';
-      toast('Logged in via emergency email link. Work normally.');
+      chip.textContent = OTP ? 'Emergency session · Email code' : 'Emergency session · Magic Link';
+      toast(OTP ? 'Signed in with an emergency email code. Work normally.' : 'Logged in via emergency email link. Work normally.');
     } else if (via === 'google') {
       chip.textContent = 'Emergency session · Google';
       toast('Signed in with Google while GoThru SSO is under maintenance. Work normally.');
@@ -607,11 +690,12 @@
     resetBtn($('#btn-retry'));
     resetBtn($('#btn-magic-link'));
     resetBtn($('#gt-submit'));
+    if (OTP) resetBtn($('#btn-verify-otp'));
     $('#gt-submit').disabled = !$('#gt-agree').checked;
     $('#probe-hint').textContent = '';
     clearMagicMsg();
   }
-  const demoEmail = () => { state.email = state.email || 'eko@gothru.co'; $('#magic-link-email').value = state.email; };
+  const demoEmail = () => { state.email = state.email || 'eko@gothru.co'; state.code = state.code || newCode(); $('#magic-link-email').value = state.email; };
 
   const JUMPS = {
     gate: openGate,
@@ -637,6 +721,13 @@
     'db-session': () => { goDashboard(null); simulateSessionOutage(); },
     import: () => { goDashboard(null); openImport(); },
   };
+  if (OTP) {
+    delete JUMPS['vf-used']; delete JUMPS['vf-expired']; // no link to reuse: code errors show inline in the modal
+    Object.assign(JUMPS, {
+      'otp-wrong': () => { JUMPS['ml-sent'](); state.linkUsed = false; otp.set(state.code.replace(/\d/g, d => (+d + 1) % 10)); },
+      'otp-expired': () => { JUMPS['ml-sent'](); codeError('This code has expired. Request a new code.', true); },
+    });
+  }
   function jump(key) {
     resetAll();
     if (key === 'gate') state.outageStart = 0;
@@ -669,10 +760,15 @@
   $('#ml-back').addEventListener('click', () => useDifferentEmail(state.email));
 
   $('#mail-back').addEventListener('click', () => { show('scr-app'); openOverlay('maint'); });
-  $('#mail-signin').addEventListener('click', goVerify);
   $('#vf-continue').addEventListener('click', () => goDashboard('magic'));
-  $('#vf-new').addEventListener('click', () => useDifferentEmail(state.email));
-  $('#vf-diff').addEventListener('click', () => useDifferentEmail(''));
+  if (OTP) {
+    $('#otp-form').addEventListener('submit', verifyCode);
+    $('#mail-copy').addEventListener('click', copyCode);
+  } else {
+    $('#mail-signin').addEventListener('click', goVerify);
+    $('#vf-new').addEventListener('click', () => useDifferentEmail(state.email));
+    $('#vf-diff').addEventListener('click', () => useDifferentEmail(''));
+  }
 
   // GoThru login (original)
   const agree = $('#gt-agree');

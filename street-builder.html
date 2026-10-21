@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Street Builder — Sign in</title>
-<meta name="description" content="Street Builder desktop app × GoThru SSO — Keycloak downtime resilience login prototype (pre-flight probe, maintenance modal, Google & Magic Link fallback).">
+<meta name="description" content="Street Builder desktop app × GoThru SSO — Keycloak downtime resilience login prototype (pre-flight probe, maintenance modal, Google & email code fallback).">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
@@ -199,7 +199,7 @@
         <div class="fallback" id="sso-emergency-fallback">
           <div class="fb-inner">
             <div class="fb-content">
-              <p class="fb-title">Need immediate access? Log in directly via Google or Magic Link:</p>
+              <p class="fb-title">Need immediate access? Log in directly via Google or an email code:</p>
               <button class="btn btn-google" id="btn-google-fallback" type="button">
                 <svg class="g-ic"><use href="#lg-google"/></svg> Sign in with Google
               </button>
@@ -211,11 +211,11 @@
                     <svg class="i"><use href="#i-mail"/></svg>
                     <input class="input" type="email" id="magic-link-email" placeholder="Enter your registered email..." autocomplete="email" inputmode="email" required>
                   </div>
-                  <button type="submit" class="btn btn-primary" id="btn-magic-link">Send Magic Link</button>
+                  <button type="submit" class="btn btn-primary" id="btn-magic-link">Send Code</button>
                 </div>
                 <div id="magic-link-status" class="form-msg" role="status"></div>
               </form>
-              <p class="fb-note"><svg class="i"><use href="#i-shield"/></svg> Passwordless · single-use link · expires in 15 minutes</p>
+              <p class="fb-note"><svg class="i"><use href="#i-shield"/></svg> Passwordless · 6-digit code · expires in 15 minutes</p>
             </div>
           </div>
         </div>
@@ -227,11 +227,11 @@
         </div>
       </div>
 
-      <!-- View: magic link sent / resent -->
-      <div class="mview" data-v="sent">
+      <!-- View: enter the emailed code (sent / resent) -->
+      <div class="mview otp-view" data-v="sent">
         <button class="modal-back" id="ml-back" aria-label="Back"><svg class="i"><use href="#i-chev-left"/></svg></button>
         <div class="mail-ill" aria-hidden="true">
-          <!-- Magic-link envelope: lands, flap opens, letter rises, badge pops, sparkles, then floats -->
+          <!-- Email-code envelope: lands, flap opens, letter rises, badge pops, sparkles, then floats -->
           <svg viewBox="0 0 180 156">
             <defs>
               <linearGradient id="ml-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ede9fe"/><stop offset="1" stop-color="#dbeafe"/></linearGradient>
@@ -249,8 +249,8 @@
                 <g clip-path="url(#ml-clip)">
                   <g class="ml-letter">
                     <rect x="52" y="40" width="76" height="70" rx="8" fill="#fff" stroke="#e0e7ff" stroke-width="1.5"/>
-                    <circle cx="90" cy="60" r="11" fill="#eef2ff"/>
-                    <path d="M87 62.5a3.5 3.5 0 0 0 5 .3l2.3-2.3a3.5 3.5 0 0 0-5-5l-1 1M93 57.5a3.5 3.5 0 0 0-5-.3l-2.3 2.3a3.5 3.5 0 0 0 5 5l1-1" fill="none" stroke="#4f46e5" stroke-width="1.8" stroke-linecap="round"/>
+                    <rect x="62" y="51" width="56" height="18" rx="9" fill="#eef2ff"/>
+                    <g fill="#4f46e5"><circle cx="75" cy="60" r="2.6"/><circle cx="85" cy="60" r="2.6"/><circle cx="95" cy="60" r="2.6"/><circle cx="105" cy="60" r="2.6"/></g>
                     <rect x="66" y="78" width="48" height="5" rx="2.5" fill="#e0e7ff"/>
                     <rect x="72" y="88" width="36" height="5" rx="2.5" fill="#eef2ff"/>
                   </g>
@@ -268,12 +268,22 @@
           </svg>
         </div>
         <h2 id="sent-title" tabindex="-1">Check your email</h2>
-        <p class="sent-lead"><span id="sent-lead">We've sent a sign-in link to</span><br><b id="sent-email">you@example.com</b></p>
-        <p class="sent-sub" id="sent-sub">Click the link in your email to continue to Street Builder. The link will expire in 15 minutes.</p>
-        <div class="banner banner-ok" id="sent-banner"><svg class="i"><use href="#i-check"/></svg><span>Magic link sent! Please check your email inbox and spam folder.</span></div>
-        <button class="btn btn-primary btn-block" id="btn-open-mail" type="button"><svg class="i"><use href="#i-external"/></svg> Open Email App</button>
-        <div class="or"><span>or</span></div>
-        <button class="btn btn-secondary btn-block" id="btn-resend" type="button" disabled>Resend Link (60s)</button>
+        <p class="sent-lead"><span id="sent-lead">Enter the 6-digit code we sent to</span><br><b id="sent-email">you@example.com</b></p>
+        <form class="otp-form" id="otp-form" novalidate>
+          <div class="otp" id="otp" role="group" aria-label="6-digit code">
+            <input class="otp-d" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 1" autocomplete="one-time-code">
+            <input class="otp-d" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 2" autocomplete="off">
+            <input class="otp-d" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 3" autocomplete="off">
+            <input class="otp-d" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 4" autocomplete="off">
+            <input class="otp-d" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 5" autocomplete="off">
+            <input class="otp-d" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 6" autocomplete="off">
+          </div>
+          <div class="form-msg" id="otp-msg" role="status"></div>
+          <button class="btn btn-primary btn-block" id="btn-verify-otp" type="submit" disabled>Verify</button>
+        </form>
+        <p class="sent-sub" id="sent-sub">The code expires in 15 minutes.</p>
+        <button class="btn btn-secondary btn-block" id="btn-open-mail" type="button"><svg class="i"><use href="#i-external"/></svg> Open Email App</button>
+        <button class="btn btn-secondary btn-block" id="btn-resend" type="button" disabled>Resend Code (60s)</button>
         <div class="banner banner-warn" id="resend-msg" hidden></div>
         <button class="link-btn" id="btn-diff-email" type="button"><svg class="i"><use href="#i-chev-left"/></svg> Use a different email</button>
       </div>
@@ -417,7 +427,7 @@
     </header>
     <article class="mail">
       <div class="mail-meta">
-        <h1 class="mail-subject">⚡ Emergency Login Link - GoThru SSO Outage Fallback</h1>
+        <h1 class="mail-subject">⚡ Emergency Login Code - GoThru SSO Outage Fallback</h1>
         <div class="mail-from">
           <span class="avatar av-gt" aria-hidden="true">G</span>
           <div><b>GoThru Security</b> <span class="muted">&lt;no-reply@id.gothru.org&gt;</span><br><small>to <span id="mail-to">you@example.com</span> · just now</small></div>
@@ -430,13 +440,12 @@
             <img class="mt-pn" src="assets/logos/street-builder.png" alt="Street Builder" width="20" height="20">
           </div>
           <span class="mt-icon"><svg class="i"><use href="#i-zap"/></svg></span>
-          <h2>Your emergency sign-in link</h2>
-          <p>Click below to sign in to your account. This link expires in 15 minutes:</p>
-          <button class="btn btn-primary btn-lg" id="mail-signin" type="button">Sign In to My Account</button>
-          <p class="mt-small">Button not working? Paste this URL into your browser:</p>
-          <code class="mt-url">https://streetbuilder.gothru.org/auth/magic-link/verify?token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOi...</code>
-          <span class="mt-notice"><svg class="i"><use href="#i-clock"/></svg> This single-use link expires in 15 minutes.</span>
-          <p class="mt-warn"><svg class="i"><use href="#i-shield"/></svg> If you did not request this login link, you can safely ignore this email.</p>
+          <h2>Your emergency sign-in code</h2>
+          <p>Enter this code in Street Builder to sign in:</p>
+          <b class="otp-code" id="mail-code">000000</b>
+          <button class="btn btn-primary btn-lg" id="mail-copy" type="button">Copy Code</button>
+          <span class="mt-notice"><svg class="i"><use href="#i-clock"/></svg> This single-use code expires in 15 minutes.</span>
+          <p class="mt-warn"><svg class="i"><use href="#i-shield"/></svg> Never share this code. If you did not request it, you can safely ignore this email.</p>
         </div>
         <p class="mt-foot">© 2026 GoThru · Sent because an emergency sign-in was requested for Street Builder.</p>
       </div>
@@ -446,19 +455,19 @@
 
 
 <!-- =========================================================
-     SCREEN 6 — /auth/magic-link/verify
+     SCREEN 6 — signing in after /auth/email-code/verify
      ========================================================= -->
-<section class="screen screen-center scene" id="scr-verify" data-label="Magic link verify">
+<section class="screen screen-center scene" id="scr-verify" data-label="Signing in">
   <div class="horizon" aria-hidden="true"><span class="hz-sun"></span><svg class="hz-mtn"><use href="#ill-mountains"/></svg></div>
   <div class="card card-status vf-card" id="vf-card" data-state="verifying">
     <div class="vf-brand"><img class="ps-ic" src="assets/logos/street-builder.png" alt="" width="30" height="30"><span>Street Builder</span></div>
 
     <div class="vf-view" data-v="verifying">
-      <div class="ring-ill" aria-hidden="true"><span class="arc"></span><span class="ring-core"><svg class="i"><use href="#i-link"/></svg></span></div>
-      <h1>Verifying your sign-in link</h1>
-      <p>Please wait a moment while we validate your link.</p>
+      <div class="ring-ill" aria-hidden="true"><span class="arc"></span><span class="ring-core"><svg class="i"><use href="#i-shield"/></svg></span></div>
+      <h1>Signing you in</h1>
+      <p>Your code is correct. Please wait a moment while we set up your session.</p>
       <ol class="steps" id="vf-steps">
-        <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg><svg class="i ic-x"><use href="#i-x"/></svg></span>Checking link validity</li>
+        <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg><svg class="i ic-x"><use href="#i-x"/></svg></span>Code verified</li>
         <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg><svg class="i ic-x"><use href="#i-x"/></svg></span>Signing you in securely</li>
         <li><span class="s-ic"><svg class="i ic-ok"><use href="#i-check"/></svg><svg class="i ic-x"><use href="#i-x"/></svg></span>Setting up your account</li>
       </ol>
@@ -514,39 +523,6 @@
       <button class="btn btn-primary btn-block btn-lg" id="vf-continue" type="button">Continue</button>
     </div>
 
-    <div class="vf-view" data-v="error">
-      <div class="err-ill" aria-hidden="true">
-        <!-- Broken link: link glyph draws in, shakes, snaps into two halves with a crack, X badge pops, halves sway -->
-        <svg viewBox="0 0 180 156">
-          <defs>
-            <linearGradient id="er-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe4e6"/><stop offset="1" stop-color="#fdf2f8"/></linearGradient>
-            <linearGradient id="er-ink" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f46e5"/><stop offset="1" stop-color="#7c3aed"/></linearGradient>
-          </defs>
-          <circle class="er-disc" cx="90" cy="76" r="64" fill="url(#er-bg)"/>
-          <g class="er-orbit"><circle cx="90" cy="76" r="73" fill="none" stroke="#fda4af" stroke-width="1.5" stroke-dasharray="2 7" stroke-linecap="round"/></g>
-          <circle class="er-core" cx="90" cy="76" r="44" fill="#fff"/>
-          <g class="er-glyph" fill="none" stroke="url(#er-ink)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-            <g class="er-a"><g class="er-a-in"><g transform="translate(62 48) scale(2.33)"><path pathLength="1" d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/></g></g></g>
-            <g class="er-b"><g class="er-b-in"><g transform="translate(62 48) scale(2.33)"><path pathLength="1" d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></g></g></g>
-          </g>
-          <path class="er-crack" d="M93 67 l-5 8 h6 l-5 8" fill="none" stroke="#f43f5e" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <g class="er-sparks" stroke-linecap="round" stroke-width="3">
-            <path d="M126 22 l-3 9" stroke="#f43f5e"/>
-            <path d="M140 32 l-8 5" stroke="#f43f5e"/>
-            <path d="M144 48 h-8" stroke="#fb7185"/>
-          </g>
-          <g class="er-badge"><circle cx="122" cy="108" r="15" fill="#ef4444" stroke="#fff" stroke-width="4"/><path d="M116.5 102.5l11 11M127.5 102.5l-11 11" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/></g>
-          <path class="er-star s1" d="M30 46l2.2 6 6 2.2-6 2.2-2.2 6-2.2-6-6-2.2 6-2.2z" fill="#fb7185"/>
-          <circle class="er-star s2" cx="40" cy="112" r="3" fill="#a5b4fc"/>
-        </svg>
-      </div>
-      <h1>This link is no longer valid</h1>
-      <p>The sign-in link may have expired or has already been used.</p>
-      <div class="banner banner-err"><svg class="i"><use href="#i-alert"/></svg><span id="vf-err-detail">This magic link has already been used.</span></div>
-      <button class="btn btn-primary btn-block" id="vf-new" type="button">Request a new link</button>
-      <div class="or"><span>or</span></div>
-      <button class="btn btn-secondary btn-block" id="vf-diff" type="button">Use a different email</button>
-    </div>
   </div>
 </section>
 
@@ -713,13 +689,13 @@
   </div>
 
   <div class="pp-group">
-    <span class="pp-label">Magic link</span>
+    <span class="pp-label">Email code</span>
     <div class="seg" role="radiogroup">
       <label><input type="radio" name="link" value="valid" checked><span>Valid</span></label>
       <label><input type="radio" name="link" value="expired"><span>Expired &gt;15m</span></label>
     </div>
-    <label class="pp-check"><input type="checkbox" id="pp-neterr"> Network error on “Send Magic Link”</label>
-    <p class="pp-hint">Rate limit: 4th request for the same email → 429. Clicking the email link twice → “already used”.</p>
+    <label class="pp-check"><input type="checkbox" id="pp-neterr"> Network error on “Send Code”</label>
+    <p class="pp-hint">Rate limit: 4th request for the same email → 429. The code is in the emergency email; 5 wrong codes → request a new one.</p>
     <p class="pp-hint">Web: <a href="index.html" style="color:var(--blue)">index.html</a> · Mobile: <a href="mobile.html" style="color:var(--blue)">mobile.html</a></p>
   </div>
 
@@ -754,17 +730,17 @@
       <button data-jump="maint-recovered">Recovered → redirect</button>
       <button data-jump="maint-fallback">Maintenance + fallback</button>
       <button data-jump="google">Google fallback flow</button>
-      <b>Magic link</b>
-      <button data-jump="ml-sent">Check your email</button>
-      <button data-jump="ml-resent">New link sent</button>
+      <b>Email code</b>
+      <button data-jump="ml-sent">Enter code</button>
+      <button data-jump="ml-resent">New code sent</button>
+      <button data-jump="otp-wrong">Wrong code</button>
+      <button data-jump="otp-expired">Code expired</button>
       <button data-jump="ml-429">Rate limited (429)</button>
       <button data-jump="email">Emergency email</button>
-      <button data-jump="vf-verifying">Verifying link</button>
-      <button data-jump="vf-success">Verified · Welcome</button>
-      <button data-jump="vf-used">Error · already used</button>
-      <button data-jump="vf-expired">Error · expired</button>
+      <button data-jump="vf-verifying">Signing in</button>
+      <button data-jump="vf-success">Signed in · Welcome</button>
       <b>In-app</b>
-      <button data-jump="db-magic">Dashboard (magic link)</button>
+      <button data-jump="db-magic">Dashboard (email code)</button>
       <button data-jump="db-session">Session banner</button>
       <button data-jump="import">Import dialog</button>
     </div>

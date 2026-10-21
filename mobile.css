@@ -127,6 +127,8 @@
 .m-label { display: block; font-size: 14px; font-weight: 600; margin: 0 0 var(--s2); }
 #m-form .btn { margin-top: var(--s5); }
 .m-view .fb-note { justify-content: center; }
+#v-sent .mail-ill { width: 132px; height: 114px; }
+#v-sent .m-text { margin-bottom: var(--s5); }
 
 /* Email app */
 .m-mail { background: #f6f5fd; }

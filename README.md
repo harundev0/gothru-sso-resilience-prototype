@@ -27,7 +27,9 @@ switches scenarios (healthy / recovers / extended outage), speed, link state and
 Deep links work too, e.g. `index.html#maint-fallback`, `#ml-sent`, `#vf-success`, `#db-magic`, `#import`.
 
 `mobile.html` is the native-app flow from the illustrations: start, pre-flight, redirect,
-local login (Google or Magic Link), enter email, email sent / resent, email app, verify, signed in, link invalid and home.
+local login (Google or email code), enter email, enter the 6-digit code (sent / resent, wrong, expired), email app, signed in and home.
+The desktop (`photo-studio.html`, `street-builder.html`) and mobile apps sign in with a 6-digit email code (OTP);
+the website (`index.html`) keeps the magic link.
 On a desktop it shows inside a phone frame with the scenario controls beside it; on a phone it runs full screen
 (controls behind the button on the right edge). Deep links work the same way, e.g. `mobile.html#sent`, `#fallback`.
 
